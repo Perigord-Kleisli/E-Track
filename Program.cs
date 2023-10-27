@@ -1,7 +1,4 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using e_track.Data;
-using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
