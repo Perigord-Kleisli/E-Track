@@ -132,3 +132,7 @@ $RECYCLE.BIN/
 
 _NCrunch*
 result
+
+*.db
+
+.store/
