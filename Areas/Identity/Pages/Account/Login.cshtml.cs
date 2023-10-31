@@ -43,9 +43,16 @@ public class LoginModel : PageModel
         if (ModelState.IsValid)
         {
             var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, isPersistent: false, lockoutOnFailure: false);
-            // var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, isPersistent: true, lockoutOnFailure: true);
 
-            if (result.Succeeded) return LocalRedirect(ReturnUrl);
+            if (result.Succeeded)
+            {
+                return LocalRedirect(ReturnUrl);
+            }
+            else
+            {
+
+                ModelState.AddModelError(string.Empty, "Invalid Email or Password");
+            }
         }
         return Page();
     }

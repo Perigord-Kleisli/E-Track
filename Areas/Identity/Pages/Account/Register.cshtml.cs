@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace e_track.Areas.Identity.Pages.Account;
 public class RegisterModel : PageModel
@@ -9,11 +10,16 @@ public class RegisterModel : PageModel
 
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
 
-    public RegisterModel(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
+    public RegisterModel(SignInManager<IdentityUser> signInManager
+        , UserManager<IdentityUser> userManager
+        , RoleManager<IdentityRole> roleManager
+        )
     {
         _signInManager = signInManager;
         _userManager = userManager;
+        _roleManager = roleManager;
     }
 
     public void OnGet()
@@ -24,8 +30,15 @@ public class RegisterModel : PageModel
     public async Task<IActionResult> OnPostAsync()
     {
         ReturnUrl = Url.Content("~/");
-        if (ModelState.IsValid) 
+        if (ModelState.IsValid)
         {
+            var existingUser = await _userManager.FindByEmailAsync(Input.Email);
+            if (existingUser != null)
+            {
+                ModelState.AddModelError(string.Empty, "Email is already registered.");
+                return Page();
+            }
+
             var identity = new IdentityUser
             {
                 UserName = Input.Email,
@@ -35,12 +48,17 @@ public class RegisterModel : PageModel
             var result = await _userManager.CreateAsync(identity, Input.Password);
             Console.WriteLine(result);
 
-            if (result.Succeeded) {
-                await _signInManager.SignInAsync(identity, isPersistent: false);
-                // await _signInManager.SignInAsync(identity, isPersistent: true);
+            var role = new IdentityRole(Input.Role);
+            var roleResult = await _roleManager.CreateAsync(role);
+
+            var addUserRoleResult = await _userManager.AddToRoleAsync(identity, Input.Role);
+
+            if (result.Succeeded && roleResult.Succeeded && addUserRoleResult.Succeeded)
+            {
+                await _signInManager.SignInAsync(identity, isPersistent: true);
                 return LocalRedirect(ReturnUrl);
             }
-        } 
+        }
         return Page();
     }
 
@@ -57,5 +75,8 @@ public class RegisterModel : PageModel
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; } = "";
+
+        [Required]
+        public string Role { get; set; } = "";
     }
 }

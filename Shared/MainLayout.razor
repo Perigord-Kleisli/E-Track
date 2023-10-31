@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>E-track</PageTitle>
 
@@ -9,13 +10,61 @@
 
     <main>
         <div class="top-row px-4">
+            <div style="width:80px;text-align:right;">
+                <AuthorizeView>
+                    <Authorized>
+                        <div class="dropdown">
+                            <button @onclick="showDropdown" @onblur="hideDropdown" class="btn btn-sm btn-primary text-white select">
+                                <span class="oi oi-person"></span>
+                                Account
+                            </button>
+                            <ul class="menu @showMenu">
+                                <li><p style="font-size: xx-small;text-align:center;margin:0">
+                                    <b>Authorization:</b>
+                                    @foreach(var role in userRoles){
+                                        <br>@role
+                                    }
+                                    </p>
+                                </li>
+                                <li><a href="/Account">Account</a></li>
+                                <li class="logout" >
+                                    <a style="color: white;" href="/Identity/Account/Logout">Logout</a>
+                                </li>
+                            </ul>
+                        </div>
+                        @code {
+                            private bool isToggled = false;
+        private string showMenu => isToggled ? "menu-open" : "";
 
-			<div style="width:40px;text-align:right;">
-				<a class="btn btn-sm btn-primary text-white" title="Account" href=""><span class="oi oi-bell"></span></a>
-			</div>
-			<div style="width:40px;text-align:right;">
-				<a class="btn btn-sm btn-primary text-white" title="Account" href="/account"><span class="oi oi-key"></span></a>
-			</div>
+        public List<string> userRoles = new List<string> ();
+        protected override async Task OnInitializedAsync() {
+            var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            userRoles = authenticationState
+                   .User
+                   .FindAll(System.Security.Claims.ClaimTypes.Role)
+                   .Select(claim => claim.Value)
+                   .ToList();
+        }
+
+        public void hideDropdown() {
+            isToggled = false;
+        }
+
+        public void showDropdown()
+        {
+            isToggled = !isToggled;
+        }
+                        }
+                    </Authorized>
+                    <NotAuthorized>
+                        <a href="/Identity/Account/Login" class="btn btn-sm btn-primary text-white select"
+                            style="background-color: green;">
+                            <span class="oi oi-account-login"></span>
+                            Login
+                        </a>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </div>
         </div>
 
         <article class="content px-4">

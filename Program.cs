@@ -1,4 +1,5 @@
 using e_track;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -13,11 +14,14 @@ var cs = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlite(cs));
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
-    options.Password.RequiredLength = 5;
+    options.Password.RequiredLength = 6;
 })
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<DataContext>();
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options => options.LoginPath = "/Identity/Account/Login");
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -36,6 +40,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
-app.Run("http://localhost:4000");
+app.Run("http://localhost:5090");
