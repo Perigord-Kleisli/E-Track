@@ -22,10 +22,13 @@ namespace ETrack.Api.Data
             modelBuilder.Entity<User>().HasData(new User {
                 Id = 1,
                 Email = "teamhaskelladminacct@gmail.com",
-                DisplayName= "teamhaskelladminacct@gmail.com",
-                //Hash of: teamhaskellpasswd
+                FullName = "Team Haskell",
+                FirstName = "Team",
+                LastName = "Haskell",
                 PasswordHash= "$2a$11$is4ITdpiSVvceEBucBkPLeIvMLVy/C2mcrSdPKotgAT8Bh5n9LW0G",
-                Roles = Role.Parent | Role.Teacher | Role.Admin
+                Roles = Role.Parent | Role.Teacher | Role.Admin,
+                IsEmailConfirmed = false,
+                CreationDate = DateTime.Now,
             });
         }
     }

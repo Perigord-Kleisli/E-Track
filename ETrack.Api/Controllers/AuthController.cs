@@ -28,9 +28,12 @@ namespace ETrack.Api.Controllers
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
             var user = new User {
                 Email = request.Email,
-                DisplayName = request.DisplayName,
+                FullName = request.FullName,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
                 PasswordHash = passwordHash,
-                Roles = request.Permission
+                Roles = request.Permission,
+                CreationDate = DateTime.Now
             };
 
             if (await authRepository.addUser(user))
@@ -60,7 +63,7 @@ namespace ETrack.Api.Controllers
         {
             List<Claim> claims = new List<Claim> {
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.DisplayName),
+                new Claim(ClaimTypes.Name, user.FullName),
             };
 
             if (user.Roles.HasFlag(Role.Parent))

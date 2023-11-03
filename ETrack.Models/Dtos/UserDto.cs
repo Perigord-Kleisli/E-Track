@@ -20,7 +20,9 @@ namespace ETrack.Models.Dtos
     {
         public required string Email { get; set; }
         public required string Password { get; set; }
-        public required string DisplayName { get; set; }
+        public required string FullName { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
         public required Role Permission { get; set; }
     }
 }

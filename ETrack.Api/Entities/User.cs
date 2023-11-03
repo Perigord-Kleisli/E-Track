@@ -8,9 +8,13 @@ namespace ETrack.Api.Entities
     public class User
     {
         public int Id { get; set; }
-        public string Email { get; set; } = String.Empty;
-        public string DisplayName { get; set; } = String.Empty;
-        public string PasswordHash { get; set; } = String.Empty;
+        public required string Email { get; set; }
+        public required string FullName { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public required string PasswordHash { get; set; }
         public Role Roles {get; set; } = Role.None;
+        public bool IsEmailConfirmed { get; set; } = false;
+        public required DateTime CreationDate { get; set; }
     }
 }
