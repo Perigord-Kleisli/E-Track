@@ -1,1 +1,6 @@
-run `dotnet ef database update` to generate `ETrackDB.db` if the file doesn't already exist
+
+
+{
+  "email": "teamhaskelladminacct@gmail.com",
+  "password": "teamhaskellpasswd"
+}
