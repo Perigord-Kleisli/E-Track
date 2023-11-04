@@ -6,4 +6,36 @@
 
 Welcome to your new app.
 
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        <p>You are an Admin</p>
+    </Authorized>
+</AuthorizeView>
+<AuthorizeView Roles="Teacher">
+    <Authorized>
+        <p>You are a Teacher</p>
+    </Authorized>
+</AuthorizeView>
+<AuthorizeView Roles="Parent">
+    <Authorized>
+        <p>You are a Parent</p>
+    </Authorized>
+</AuthorizeView>
+<AuthorizeView>
+    <Authorized>
+        <p>You are Authorized</p>
+        <p>claims: </p>
+        @foreach(var claim in @context.User.Claims) 
+        {
+            <p>@claim.Type : @claim.Value</p>
+        }
+        <p>@context.User.IsInRole("Admin")</p>
+        <p>@context.User.IsInRole("Teacher")</p>
+        <p>@context.User.IsInRole("Parent")</p>
+    </Authorized>
+    <NotAuthorized>
+        <p>You are unauthorized</p>
+    </NotAuthorized>
+</AuthorizeView>
+
 <SurveyPrompt Title="How is Blazor working for you?" />
