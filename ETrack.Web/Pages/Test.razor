@@ -1,0 +1,110 @@
+﻿@page "/test"
+@inject HttpClient Http
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        <p>You are an Admin</p>
+    </Authorized>
+</AuthorizeView>
+<AuthorizeView Roles="Teacher">
+    <Authorized>
+        <p>You are a Teacher</p>
+    </Authorized>
+</AuthorizeView>
+<AuthorizeView Roles="Parent">
+    <Authorized>
+        <p>You are a Parent</p>
+    </Authorized>
+</AuthorizeView>
+<AuthorizeView>
+    <Authorized>
+        <p>You are Authorized</p>
+        <p>claims: </p>
+        @foreach(var claim in @context.User.Claims) 
+        {
+            <p>@claim.Type : @claim.Value</p>
+        }
+        <p>@context.User.IsInRole("Admin")</p>
+        <p>@context.User.IsInRole("Teacher")</p>
+        <p>@context.User.IsInRole("Parent")</p>
+    </Authorized>
+    <NotAuthorized>
+        <p>You are unauthorized</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+<button @onclick="httpAdmin">Admin Call</button>
+<p>@adminResult</p>
+
+<button @onclick="httpTeacher">Teacher Call</button>
+<p>@teacherResult</p>
+
+<button @onclick="httpParent">Teacher Call</button>
+<p>@parentResult</p>
+
+@code 
+{
+    string adminResult = "";
+    string teacherResult = "";
+    string parentResult = "";
+    async Task httpAdmin() 
+    {
+        try 
+        {
+            var response = await Http.GetAsync("api/Auth/admintest");
+            if (response.IsSuccessStatusCode)
+            {
+                adminResult = await response.Content.ReadAsStringAsync();
+            } else 
+            {
+                adminResult = response.StatusCode.ToString();
+            }
+        }
+        catch (Exception e)
+        {
+            adminResult = e.ToString();
+        }
+    }
+    async Task httpTeacher() 
+    {
+        try 
+        {
+            var response = await Http.GetAsync("api/Auth/teachertest");
+            if (response.IsSuccessStatusCode)
+            {
+                teacherResult = await response.Content.ReadAsStringAsync();
+            } else 
+            {
+                teacherResult = response.StatusCode.ToString();
+            }
+        }
+        catch (Exception e)
+        {
+            teacherResult = e.ToString();
+        }
+    }
+    async Task httpParent() 
+    {
+        try 
+        {
+            var response = await Http.GetAsync("api/Auth/parenttest");
+            if (response.IsSuccessStatusCode)
+            {
+                parentResult = await response.Content.ReadAsStringAsync();
+            } else 
+            {
+                parentResult = response.StatusCode.ToString();
+            }
+        }
+        catch (Exception e)
+        {
+            parentResult = e.ToString();
+        }
+    }
+}
+
+<SurveyPrompt Title="How is Blazor working for you?" />

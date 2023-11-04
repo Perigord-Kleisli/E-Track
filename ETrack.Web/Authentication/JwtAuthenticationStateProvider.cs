@@ -30,7 +30,7 @@ namespace ETrack.Web.Authentication
                 {
                     identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
                     _http.DefaultRequestHeaders.Authorization =
-                        new AuthenticationHeaderValue("Bearer", token.Replace("\"", ""));
+                        new AuthenticationHeaderValue("bearer", token.Replace("\"", ""));
                 }
 
                 var user = new ClaimsPrincipal(identity);
@@ -52,15 +52,14 @@ namespace ETrack.Web.Authentication
             var jsonBytes = ParseBase64WithoutPadding(payload);
             var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes)!;
 
-            IEnumerable<Claim> roles = keyValuePairs[ClaimTypes.Role]
-                .ToString()!
-                .Split(",")
-                .Select(x => new Claim(ClaimTypes.Role, x));
+            // Lack of Sum Types makes JSON Desrialization of polymorphic structures a pain
+            // There is probably a better way to do this
+            var roles = JsonSerializer.Deserialize<IEnumerable<string>>(keyValuePairs[ClaimTypes.Role].ToString()!)!;
             keyValuePairs.Remove(ClaimTypes.Role);
 
             return keyValuePairs
                 .Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()!))
-                .Concat(roles);
+                .Concat(roles.Select(role => new Claim (ClaimTypes.Role, role)));
         }
 
         private static byte[] ParseBase64WithoutPadding(string base64)
