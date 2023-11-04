@@ -46,6 +46,24 @@ namespace ETrack.Api.Controllers
             }
         }
 
+        [HttpGet("admintest"), Authorize(Roles = "Admin")]
+        public ActionResult<string> TestGetAdmin() 
+        {
+            return Ok("You are an admin");
+        }
+
+        [HttpGet("teachertest"), Authorize(Roles = "Teacher")]
+        public ActionResult<string> TestGetTeacher() 
+        {
+            return Ok("You are a Teacher");
+        }
+
+        [HttpGet("parenttest"), Authorize(Roles = "Parent")]
+        public ActionResult<string> TestGetParent() 
+        {
+            return Ok("You are a Parent");
+        }
+
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(UserLoginDto request) {
             var user = await authRepository.GetByUserByName(request.Email);
@@ -85,7 +103,7 @@ namespace ETrack.Api.Controllers
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddHours(8),
+                expires: DateTime.Now.AddMonths(2),
                 signingCredentials: creds);
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
