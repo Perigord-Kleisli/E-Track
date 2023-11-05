@@ -15,6 +15,7 @@ namespace ETrack.Api.Entities
         public required string PasswordHash { get; set; }
         public Role Roles {get; set; } = Role.None;
         public bool IsEmailConfirmed { get; set; } = false;
+        public required DateTime BirthDate { get; set; }
         public required DateTime CreationDate { get; set; }
     }
 }

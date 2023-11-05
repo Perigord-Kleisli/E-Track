@@ -29,6 +29,7 @@ namespace ETrack.Api.Data
                 Roles = Role.Parent | Role.Teacher | Role.Admin,
                 IsEmailConfirmed = false,
                 CreationDate = DateTime.Now,
+                BirthDate = DateTime.Parse("02/16/2005")
             });
         }
     }

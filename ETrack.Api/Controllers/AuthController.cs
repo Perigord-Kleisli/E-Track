@@ -23,7 +23,7 @@ namespace ETrack.Api.Controllers
             this.configuration = configuration;
         }
 
-        [HttpPost("register"), Authorize(Roles = "Admin")]
+        [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserRegisterDto request) {
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
             var user = new User {
@@ -32,7 +32,8 @@ namespace ETrack.Api.Controllers
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 PasswordHash = passwordHash,
-                Roles = request.Permission,
+                BirthDate = request.BirthDate,
+                Roles = Role.Parent,
                 CreationDate = DateTime.Now
             };
 
@@ -69,7 +70,7 @@ namespace ETrack.Api.Controllers
             var user = await authRepository.GetByUserByName(request.Email);
             if (user is null) 
             {
-                return BadRequest($"{request.Email} not found");
+                return BadRequest($"Email {request.Email} not found");
             }
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash)) {
                 return BadRequest("Invalid password");
