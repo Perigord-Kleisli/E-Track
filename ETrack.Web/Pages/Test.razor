@@ -43,7 +43,7 @@
 <button @onclick="httpTeacher">Teacher Call</button>
 <p>@teacherResult</p>
 
-<button @onclick="httpParent">Teacher Call</button>
+<button @onclick="httpParent">Parent Call</button>
 <p>@parentResult</p>
 
 @code 
@@ -61,7 +61,7 @@
                 adminResult = await response.Content.ReadAsStringAsync();
             } else 
             {
-                adminResult = response.StatusCode.ToString();
+                adminResult = response.StatusCode.ToString() + await response.Content.ReadAsStringAsync();
             }
         }
         catch (Exception e)
@@ -79,7 +79,7 @@
                 teacherResult = await response.Content.ReadAsStringAsync();
             } else 
             {
-                teacherResult = response.StatusCode.ToString();
+                teacherResult = response.StatusCode.ToString()+ await response.Content.ReadAsStringAsync();
             }
         }
         catch (Exception e)
@@ -97,7 +97,7 @@
                 parentResult = await response.Content.ReadAsStringAsync();
             } else 
             {
-                parentResult = response.StatusCode.ToString();
+                parentResult = response.StatusCode.ToString()+ await response.Content.ReadAsStringAsync();
             }
         }
         catch (Exception e)

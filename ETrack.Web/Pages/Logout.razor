@@ -1,0 +1,19 @@
+@page "/logout"
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthStateProvider
+@inject ILocalStorageService LocalStorage
+
+<h2>
+    Logging Out
+</h2>
+
+@code 
+{
+    protected override async void OnInitialized() 
+    {
+
+       await LocalStorage.RemoveItemAsync("token");
+       await AuthStateProvider.GetAuthenticationStateAsync();
+       NavigationManager.NavigateTo("/test");
+    }
+}

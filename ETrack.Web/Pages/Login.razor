@@ -1,28 +1,231 @@
 @page "/login"
-@inject HttpClient Http
+
+@layout NoMenuLayout
 @inject AuthenticationStateProvider AuthStateProvider
 @inject ILocalStorageService LocalStorage
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
 
-<h3>Login</h3>
+<style>
+    body {
+        background-color: var(--primary-color);
+    }
+    form {
+        --text-color: #afafaf;
+        max-width: 500px;
+        min-width: 50ch;
+        border: 1px solid var(--text-color);
+        border-radius: 1em;
+        padding: 3em;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        background: white;
+        transform: translate(-50%,-50%);        
+    }
 
-<EditForm Model="user" OnSubmit="HandleLogin">
-    <label for="email">email</label>
-    <InputText id="email" @bind-Value="user.Email" />
-    <label for="password">Password</label>
-    <InputText id="password" @bind-Value="user.Password" type="password" />
-    <button type="submit" class="btn btn-primary">Do it!</button>
+    .form-group {
+        width: 100%;
+        position: relative;
+        margin: 4rem auto 1rem;
+        display: grid;
+        grid-column: 1;
+        grid-row: 1;
+        margin-top: 2em;
+    }
+
+    .label {
+        color: var(--text-color);
+        font-size: 1.2rem;
+    }
+
+    .input {
+        overflow: hidden;
+        outline: none;
+        margin: 0;
+        width: 100%;
+        font-size: large;
+        padding: 1rem 1rem;
+        border: 1px solid var(--text-color);
+        border-radius: 0.5rem;
+    }
+
+    .input:hover {
+        border-color: black;
+    }
+
+    .input:focus-within {
+        border: 2px solid #0b5ed7
+    }
+
+    .input:invalid:not(:placeholder-shown) + .label {
+        color: red;
+    }
+
+    .label {
+        z-index: 1;
+        position: absolute;
+        grid-column: 1;
+        grid-row: 1;
+        transform: translateY(1.2rem) translateX(1em);
+        transform-origin: 0%;
+        border: white solid 0px;
+        transition: transform 400ms;
+        background-color: white;
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 3em;
+    }
+
+    .header-icon {
+        font-size: 3em;
+        margin: 0.5em;
+        background-color: var(--primary-color);
+        border: 10px solid var(--primary-color);
+        color: white;
+        border-radius: 100%;
+    }
+
+    .form-group:focus-within .label, 
+    .input:not(:placeholder-shown) + .label{
+        transform: scale(0.8) translateY(calc(-1rem - 6px)) translateX(1em);
+        border: white solid 6px;
+    }
+
+    .login-btn {
+        width: 100%;
+        margin-top: 1em;
+        border-radius: 0.5rem;
+        padding: 0.5em;
+        color: white;
+        border: 0px;
+        background-color: var(--secondary-color);
+    }    
+
+    .login-btn:active {
+        background-color: var(--secondary-color-light);
+    }
+
+    .login-btn:hover {
+        background-color: var(--secondary-color-dark);
+    }
+
+    footer {
+        text-align: center;
+        color: gray;
+        width: 100%;
+        margin-top: 2em;
+    }
+
+    .toggle-password {
+        cursor: pointer;
+        position: absolute;
+        font-size: 1.2em;
+        grid-column: 1;
+        grid-row: 1;
+        right: 0.5em;
+        bottom: 0.5em;
+        border: 10px solid transparent;
+        user-select: none;
+        transition: border 100ms, background-color 100ms;
+        border-radius: 100%;
+        display: none;
+    }
+
+    .input:not(:placeholder-shown) ~ .toggle-password {
+        display: block;
+    }
+
+    .toggle-password:hover {
+        background-color: lightgray;
+        border: 10px solid lightgray;
+    }
+
+    .toggle-password:active {
+        background-color: gray;
+        border: 10px solid gray;
+    }
+
+    .error-message {
+        border: 2px solid red;
+        color: red;
+        padding: 0.5em;
+        background-color: pink;
+    }
+
+</style>
+
+<EditForm Model="user" OnValidSubmit="HandleLogin">
+    <div class="form-header">
+    <span class="material-icons header-icon">face</span>
+    <h3>Log In</h3>
+    </div>
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <input id="email" class="input" type="email" @bind="user.Email" placeholder="" required>
+        <label for="email" class="label">Email Address</label>
+    </div>
+    <div class="form-group">
+        <input 
+            id="password" 
+            class="input password-input" 
+            type="@(showPassword ? "text" : "password")" 
+            @bind="user.Password" 
+            placeholder="" 
+            required>
+        <label for="password" class="label">Password</label>
+        <span 
+            class="toggle-password material-icons" 
+            @onclick="togglePass"
+           >
+           @(showPassword ? "visibility" : "visibility_off")
+        </span>
+    </div>
+    @* <p class="text-danger">@errorMessage</p> *@
+    @if(errorMessage is not null) {
+        <div class="error-message">@errorMessage</div>
+    }
+    <button type="submit" class="login-btn">Log In</button>
+    <ValidationSummary />
+    <footer>Copyright © Group Haskell 2023.</footer>
 </EditForm>
 
 @code {
-    UserLoginDto user = new UserLoginDto {
-        Email = "", Password = ""
-    };
+
+    bool showPassword = false;
+    string? errorMessage = null;
+
+    public string? email {get; set; }
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+            if (email is not null) 
+            {
+                user.Email = email;
+            }
+        }
+        UserLoginDto user = new UserLoginDto
+        {
+            Email = "",
+            Password = ""
+        };
+
+    void togglePass() {
+        showPassword = !showPassword;
+    }
 
     async Task HandleLogin()
     {
-        var result = await Http.PostAsJsonAsync("api/Auth/login", user);
-        var token = await result.Content.ReadAsStringAsync();
-        await LocalStorage.SetItemAsync("token", token);
-        await AuthStateProvider.GetAuthenticationStateAsync();
+        try {
+            var token = await UserService.UserLogin(user);
+            await LocalStorage.SetItemAsync("token", token);
+            await AuthStateProvider.GetAuthenticationStateAsync();
+            NavigationManager.NavigateTo("/test");
+        } catch (Exception e) {
+            errorMessage = e.Message;
+        }
     }
 }

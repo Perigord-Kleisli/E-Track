@@ -52,9 +52,19 @@ namespace ETrack.Web.Authentication
             var jsonBytes = ParseBase64WithoutPadding(payload);
             var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes)!;
 
+            var roles = new List<string>();
             // Lack of Sum Types makes JSON Desrialization of polymorphic structures a pain
             // There is probably a better way to do this
-            var roles = JsonSerializer.Deserialize<IEnumerable<string>>(keyValuePairs[ClaimTypes.Role].ToString()!)!;
+
+            var roleClaims = keyValuePairs[ClaimTypes.Role].ToString()!;
+            if (roleClaims.Any(x => x == ',')) {
+                roles = JsonSerializer.Deserialize<IEnumerable<string>>(roleClaims)!.ToList();
+            } 
+            else 
+            {
+                roles.Add(roleClaims);
+            }
+
             keyValuePairs.Remove(ClaimTypes.Role);
 
             return keyValuePairs
