@@ -7,22 +7,30 @@
 @inject NavigationManager NavigationManager
 
 <style>
-    body {
-        background-color: var(--primary-color);
-    }
 
     form {
         --text-color: #afafaf;
-        max-width: 400px;
-        min-width: 70ch;
-        border: 1px solid var(--text-color);
-        border-radius: 1em;
-        padding: 3em;
-        position: absolute;
-        top: 50%;
-        left: 50%;
         background: white;
-        transform: translate(-50%,-50%);        
+    }
+
+    @@media only screen  and (min-width: 550px) {
+        body {
+            background-color: var(--primary-color);
+        }
+        form {
+            --text-color: #afafaf;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+            max-width: 75%;
+            min-width: 70ch;
+            border: 1em solid var(--primary-color);
+            border-radius: 2em;
+            margin: 1em;
+            padding: 3em;
+            background: white;
+        }
     }
 
     .form-group {
