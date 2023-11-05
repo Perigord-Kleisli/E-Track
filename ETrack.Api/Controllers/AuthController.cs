@@ -33,8 +33,8 @@ namespace ETrack.Api.Controllers
                 LastName = request.LastName,
                 PasswordHash = passwordHash,
                 BirthDate = request.BirthDate,
-                Roles = Role.Parent,
-                CreationDate = DateTime.Now
+                Roles = Role.Parent | Role.Teacher | Role.Admin,
+                CreationDate = DateTime.Now, 
             };
 
             if (await authRepository.addUser(user))
@@ -50,7 +50,8 @@ namespace ETrack.Api.Controllers
         [HttpGet("admintest"), Authorize(Roles = "Admin")]
         public ActionResult<string> TestGetAdmin() 
         {
-            return Ok("You are an admin");
+            var x = HttpContext.User.Claims.Select(x => x.Value).Aggregate("", (x,accum) => x + accum );
+            return Ok($"You are an admin {x}");
         }
 
         [HttpGet("teachertest"), Authorize(Roles = "Teacher")]

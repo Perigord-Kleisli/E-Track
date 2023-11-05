@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ETrack.Models.Dtos;
 
@@ -17,5 +18,7 @@ namespace ETrack.Api.Entities
         public bool IsEmailConfirmed { get; set; } = false;
         public required DateTime BirthDate { get; set; }
         public required DateTime CreationDate { get; set; }
+        public List<Student> Students {get; set; } = new List<Student>();
+        public List<Student> Children { get; set; } = new List<Student>();
     }
 }

@@ -164,6 +164,11 @@
         background-color: pink;
     }
 
+    .no-account {
+        text-align: center;
+        color: rgb(83, 83, 83);
+        margin: 1em;
+    }
 </style>
 
 <EditForm Model="user" OnValidSubmit="HandleLogin">
@@ -197,6 +202,7 @@
         <div class="error-message">@errorMessage</div>
     }
     <button type="submit" class="login-btn">Log In</button>
+    <p class="no-account">Don't have an account? <a href="/signup">register</a></p>
     <ValidationSummary />
     <footer>Copyright © Group Haskell 2023.</footer>
 </EditForm>

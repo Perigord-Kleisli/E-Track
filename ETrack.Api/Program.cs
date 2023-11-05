@@ -18,7 +18,7 @@ internal class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-        builder.Services.AddDbContextPool<AuthDBContext>(options =>
+        builder.Services.AddDbContextPool<ETrackDBContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("ETrackApiConnection")));
         builder.Services.AddScoped<IAuthRepository, AuthRepository>();
         builder.Services.AddSwaggerGen(options =>

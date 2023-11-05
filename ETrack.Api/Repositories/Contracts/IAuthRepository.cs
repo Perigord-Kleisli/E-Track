@@ -9,5 +9,6 @@ namespace ETrack.Api.Repositories.Contracts
        Task<User?> GetByUserByName(string usernam);
 
        Task<bool> addUser(User user);
+       Task<IEnumerable<Student>> getChildren(int userId);
     }
 }

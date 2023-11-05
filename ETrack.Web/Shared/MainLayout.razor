@@ -11,13 +11,16 @@
         <AuthorizeView>
             <NotAuthorized>
                 <div class="top-row px-4">
-                    <a href="/login">Login</a>
-                    <a href="/register">Sign Up</a>
+                    <a href="/login">
+                       <span class="material-icons">login</span>
+                    </a>
                 </div>
             </NotAuthorized>
             <Authorized>
                 <div class="top-row px-4">
-                    <a href="/logout">Log Out</a>
+                    <a href="/logout">
+                       <span class="material-icons">logout</span>
+                    </a>
                 </div>
             </Authorized>
         </AuthorizeView>
