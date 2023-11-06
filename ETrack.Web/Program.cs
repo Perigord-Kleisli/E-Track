@@ -1,4 +1,5 @@
 using Blazored.LocalStorage;
+using Blazored.Toast;
 using ETrack.Web.Authentication;
 using ETrack.Web.Services;
 using ETrack.Web.Services.Contracts;
@@ -20,6 +21,7 @@ internal class Program
        builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthenticationStateProvider>();
        builder.Services.AddScoped<IUserService, UserService>();
        builder.Services.AddAuthenticationCore();
+       builder.Services.AddBlazoredToast();
 
        var app = builder.Build();
 

@@ -238,7 +238,7 @@
             var token = await UserService.UserLogin(user);
             await LocalStorage.SetItemAsync("token", token);
             await AuthStateProvider.GetAuthenticationStateAsync();
-            NavigationManager.NavigateTo("/test");
+            NavigationManager.NavigateTo("/");
         } catch (Exception e) {
             errorMessage = e.Message;
         }

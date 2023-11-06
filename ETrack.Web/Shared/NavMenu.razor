@@ -11,11 +11,33 @@
 <hr class="@NavMenuCssClass navbar-break">
 <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="admin-panel">
-                <span class="material-icons">manage_accounts</span> Admin Panel
-            </NavLink>
-        </div>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="admin-panel">
+                        <span class="material-icons">manage_accounts</span> Admin Panel
+                    </NavLink>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+        <AuthorizeView Roles="Teacher">
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="teacher-panel">
+                        <span class="material-icons">school</span> Teacher Panel
+                    </NavLink>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+        <AuthorizeView Roles="Parent">
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="parent-panel">
+                        <span class="material-icons">supervisor_account</span> Parent Panel
+                    </NavLink>
+                </div>
+            </Authorized>
+        </AuthorizeView>
     </nav>
 </div>
 
