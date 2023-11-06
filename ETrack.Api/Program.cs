@@ -1,4 +1,5 @@
 using ETrack.Api.Data;
+using ETrack.Api.Repositories;
 using ETrack.Api.Repositories.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,7 @@ internal class Program
         builder.Services.AddDbContextPool<ETrackDBContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("ETrackApiConnection")));
         builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+        builder.Services.AddScoped<IStudentRepository, StudentRepository>();
         builder.Services.AddSwaggerGen(options =>
         {
             options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
