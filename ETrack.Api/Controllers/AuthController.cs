@@ -1,12 +1,20 @@
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.InteropServices;
 using System.Security.Claims;
-using BCrypt.Net;
 using ETrack.Api.Entities;
 using ETrack.Api.Repositories.Contracts;
+using ETrack.Api.Services;
+using ETrack.Api.Services.Contracts;
 using ETrack.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit;
+using MimeKit.Text;
 
 namespace ETrack.Api.Controllers
 {
@@ -16,21 +24,27 @@ namespace ETrack.Api.Controllers
     {
         private readonly IAuthRepository authRepository;
         private readonly IConfiguration configuration;
+        private readonly IEmailService emailService;
 
-        public AuthController( IAuthRepository authRepository, IConfiguration configuration)
+        public AuthController( IAuthRepository authRepository, IConfiguration configuration, IEmailService emailService)
         {
             this.authRepository = authRepository;
             this.configuration = configuration;
+            this.emailService = emailService;
         }
 
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserRegisterDto request) {
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
-            var roles = await authRepository.GetToken(request.RegisterToken);
 
-            if (roles is null)
+            Role roles; 
+            try 
             {
-                return BadRequest("Register Token Does Not Exist");
+                roles = await authRepository.GetToken(request.RegisterToken);
+            }   
+            catch (Exception e) 
+            {
+                return BadRequest(e.Message);
             }
 
             var user = new User {
@@ -40,10 +54,9 @@ namespace ETrack.Api.Controllers
                 LastName = request.LastName,
                 PasswordHash = passwordHash,
                 BirthDate = request.BirthDate,
-                Roles = roles.GetValueOrDefault(),
+                Roles = roles,
                 CreationDate = DateTime.Now, 
             };
-
 
             if (!await authRepository.addUser(user))
             {
@@ -52,17 +65,55 @@ namespace ETrack.Api.Controllers
 
             return Ok(user);
         }
-        [HttpPost("registerToken"), Authorize(Roles ="Teacher,Admin")]
-        public async Task<ActionResult<Guid>> RegisterToken(CreateTokenDto request)
+
+        [HttpPost("confirmation-token")]
+        public async Task<ActionResult> GetConfirmationToken([EmailAddress] string emailToVerify) {
+
+            var user =  await authRepository.GetByUserByEmail(emailToVerify);
+
+            if (user is null)
+                return BadRequest($"User {emailToVerify} not found");
+            if (user.IsEmailConfirmed)
+                return BadRequest("User is already confirmed");
+
+            var confirmationToken =  await authRepository.CreateConfirmationToken(user);
+
+            var apiAddress = new Uri (Request.GetDisplayUrl());
+            var baseUri = apiAddress.GetLeftPart(System.UriPartial.Authority);
+
+            emailService.sendEmail(new EmailDto {
+                To = emailToVerify,
+                Subject = "ETrack verification",
+                Body = $"""
+                <a href="http://localhost:5195/confirm-email/{confirmationToken}">Confirm Email</a>
+                """
+            });
+            return Ok();
+        }
+        [HttpPost("confirm-email")]
+        public async Task<ActionResult> ConfirmEmail(Guid confirmationGUID) 
         {
-            var guid = Guid.NewGuid();
+            try 
+            {
+                await authRepository.UseConfirmationToken(confirmationGUID);
+                return Ok();
+            } 
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost("generate-register-token"), Authorize(Roles ="Teacher,Admin")]
+        public async Task<ActionResult<string>> GenerateRegisterToken(CreateTokenDto request)
+        {
             var flag = Role.None;
             if (request.isParent) flag = flag | Role.Parent;
             if (request.isTeacher) flag = flag | Role.Teacher;
             if (request.isAdmin) flag = flag | Role.Admin;
 
-            await authRepository.AddToken(guid, flag);
-            return Ok(guid);
+            var token  = await authRepository.GenToken(flag);
+            return Ok(token.Uid);
         }
 
         [HttpGet("admintest"), Authorize(Roles = "Admin")]
@@ -97,11 +148,17 @@ namespace ETrack.Api.Controllers
             {
                 return BadRequest($"Email {request.Email} not found");
             }
-            if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash)) {
+            if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash)) 
+            {
                 return BadRequest("Invalid password");
+            }
+            if (!user.IsEmailConfirmed) 
+            {
+                return BadRequest("User must have a confirmed email");
             }
             return Ok(CreateToken(user));
         }
+
 
         private string CreateToken(User user) 
         {
@@ -118,13 +175,9 @@ namespace ETrack.Api.Controllers
             if (user.Roles.HasFlag(Role.Admin))
                 claims.Add(new Claim(ClaimTypes.Role, "Admin"));
 
-            // This block of code should be replaced by an actual secret
-            // management service if it is to be used in an actual setting
-            // As of now, creating and managing an AWS key is too much of
-            // a hassle for a 1st year project
             var key = new SymmetricSecurityKey(
                 System.Text.Encoding.UTF8.GetBytes( 
-                    configuration.GetSection("AppSettings:Token").Value!));
+                    configuration["AppSettings:Token"]!));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 

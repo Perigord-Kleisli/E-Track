@@ -107,12 +107,12 @@
         var response = await Http.GetAsync("api/auth/users");
         if (response.IsSuccessStatusCode)
         {
-            users = await response.Content.ReadFromJsonAsync<List<UsersGetDto>>();
+            users = (await response.Content.ReadFromJsonAsync<List<UsersGetDto>>())!;
         }
     }
     async void showGUID()
     {
-        var response = await Http.PostAsJsonAsync("/api/auth/registerToken", new CreateTokenDto {
+        var response = await Http.PostAsJsonAsync("/api/auth/generate-register-token", new CreateTokenDto {
             isParent = GenGUIDModel.isParent,
             isTeacher = GenGUIDModel.isTeacher,
             isAdmin = GenGUIDModel.isAdmin 

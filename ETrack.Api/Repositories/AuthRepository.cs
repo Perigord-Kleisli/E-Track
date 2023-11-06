@@ -1,8 +1,10 @@
+using System.Formats.Asn1;
 using ETrack.Api.Data;
 using ETrack.Api.Entities;
 using ETrack.Api.Repositories.Contracts;
 using ETrack.Models.Dtos;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace ETrack.Api.Repositories
 {
@@ -13,12 +15,6 @@ namespace ETrack.Api.Repositories
         public AuthRepository(ETrackDBContext authDBContext)
         {
             this.etrackDBContext = authDBContext;
-        }
-
-        public async Task AddToken(Guid guid, Role role)
-        {
-            await etrackDBContext.RegisterTokens.AddAsync(new Token {Guid = guid, Role = role});
-            await etrackDBContext.SaveChangesAsync();
         }
 
         // Returns false if there already is a user with the same email
@@ -48,19 +44,57 @@ namespace ETrack.Api.Repositories
             return user!.Children;
         }
 
-        public async Task<Role?> GetToken(Guid guid)
+        public async Task<UserRegisterToken> GenToken(Role roles)
         {
-            var guidMatch = await etrackDBContext.RegisterTokens.FirstOrDefaultAsync(x => x.Guid == guid);
+            var rand = new Random();
+            var uid = (rand.Next() * 46656).ToString("X8");
+
+            while (await etrackDBContext.RegisterTokens.AnyAsync(x => x.Uid == uid ))
+            {
+                uid = (rand.Next() * 46656).ToString("X8");
+            }
+
+            var token = new UserRegisterToken
+            {
+                Uid = uid,
+                CreationDate = DateTime.Now,
+                Role = roles
+            };
+            await etrackDBContext.RegisterTokens.AddAsync(token);
+            await etrackDBContext.SaveChangesAsync();
+            return token;
+        }
+
+        public async Task<Role> GetToken(string uid)
+        {
+            var guidMatch = await etrackDBContext
+                .RegisterTokens
+                .FirstOrDefaultAsync(x => x.Uid.ToUpper() == uid.ToUpper());
             if (guidMatch is null)
             {
-                return null;
+                throw new Exception("Registration GUID not found in database");
             }
-            else
+
+            if (DateTime.Now > guidMatch.CreationDate.AddHours(6))
             {
-                etrackDBContext.RegisterTokens.Remove(guidMatch);
-                etrackDBContext.SaveChanges();
-                return guidMatch.Role;
+                throw new Exception("Registration GUID is expired");
             }
+            etrackDBContext.RegisterTokens.Remove(guidMatch);
+            await etrackDBContext.SaveChangesAsync();
+            return guidMatch.Role;
+        }
+
+        public async Task<Guid> CreateConfirmationToken(User unconfirmedUser)
+        {
+            var guid = Guid.NewGuid();
+            var token = new UserEmailConfirmationToken {
+                UserId = unconfirmedUser.Id,
+                Guid = guid,
+                CreationDate = DateTime.Now
+            };
+            await etrackDBContext.EmailConfirmationTokens.AddAsync(token);
+            await etrackDBContext.SaveChangesAsync();
+            return guid;
         }
 
         public async Task<User?> GetUser(int id)
@@ -71,6 +105,27 @@ namespace ETrack.Api.Repositories
         public async Task<IEnumerable<User>> GetUsers()
         {
             return await etrackDBContext.Users.ToListAsync();
+        }
+
+        public async Task UseConfirmationToken(Guid guid)
+        {
+            var guidMatch = await etrackDBContext
+                .EmailConfirmationTokens
+                .FirstOrDefaultAsync(x => x.Guid == guid);
+            if (guidMatch is null)
+            {
+                throw new Exception("GUID not found in database");
+            }
+
+            if (DateTime.Now > guidMatch.CreationDate.AddHours(1))
+            {
+                throw new Exception("Confirmation GUID is expired");
+            }
+
+            var user = await etrackDBContext.Users.FindAsync(guidMatch.UserId);
+            user!.IsEmailConfirmed = true;
+            etrackDBContext.EmailConfirmationTokens.Remove(guidMatch);
+            await etrackDBContext.SaveChangesAsync();
         }
     }
 }

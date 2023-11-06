@@ -13,7 +13,9 @@ namespace ETrack.Api.Data
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<SchoolDay> SchoolDays { get; set; }
         public DbSet<Activity> Activities { get; set; }
-        public DbSet<Token> RegisterTokens { get; set; }
+        public DbSet<UserRegisterToken> RegisterTokens { get; set; }
+        public DbSet<UserEmailConfirmationToken> EmailConfirmationTokens { get; set; }
+        public DbSet<UserPasswordForgotToken> PasswordForgotTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,6 +28,14 @@ namespace ETrack.Api.Data
             //WE ARE NOT AFFILIATED WITH THE HASKELL FOUNDATION
 
             //The following are test data for testing
+            modelBuilder.Entity<UserRegisterToken>().HasData( 
+                new UserRegisterToken {
+                    Id = 1,
+                    Role = Role.Parent | Role.Admin | Role.Teacher,
+                    CreationDate = DateTime.Now,
+                    Uid = "ADMINTOKEN"
+                }
+            );
 
             // var schoolDay1 = new SchoolDay {Id = 3, Date = DateTime.Now};
             // var schoolDay2 = new SchoolDay {Id = 4, Date = DateTime.MinValue};

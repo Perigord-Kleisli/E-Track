@@ -1,0 +1,11 @@
+@page "/Confirm-email/{confirmationToken}"
+
+<p>
+    Your token is @confirmationToken
+</p>
+
+@code 
+{
+    [Parameter]
+    public required string confirmationToken {get; set;}
+}

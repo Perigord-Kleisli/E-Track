@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace ETrack.Models.Dtos
 {
 
@@ -12,7 +14,9 @@ namespace ETrack.Models.Dtos
 
     public class UserLoginDto
     {
+       [EmailAddress]
        public required string Email { get; set; }
+       [MinLength(8)]
        public required string Password { get; set; }
     }
 
@@ -21,7 +25,7 @@ namespace ETrack.Models.Dtos
         public required string Email { get; set; }
         public required string Password { get; set; }
         public required string FullName { get; set; }
-        public required Guid RegisterToken { get; set; }
+        public required string RegisterToken { get; set; }
         public required DateTime BirthDate {get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }

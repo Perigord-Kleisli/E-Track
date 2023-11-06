@@ -5,7 +5,7 @@ using ETrack.Web.Services;
 using ETrack.Web.Services.Contracts;
 using Microsoft.AspNetCore.Components.Authorization;
 
-internal class Program
+internal partial class Program
 {
     private static void Main(string[] args)
     {

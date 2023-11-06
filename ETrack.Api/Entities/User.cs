@@ -5,11 +5,30 @@ using ETrack.Models.Dtos;
 namespace ETrack.Api.Entities
 {
 
-    public class Token
+    public class UserRegisterToken
     {
         public int Id { get; set; }
-        public Role Role { get; set; }
-        public Guid Guid { get; set; }
+        public required Role Role { get; set; }
+        public required string Uid { get; set; }
+        public required DateTime CreationDate { get; set; }
+    }
+
+    public class UserEmailConfirmationToken
+    {
+        public int Id { get; set; }
+        public required Guid Guid { get; set; }
+        public int UserId { get; set; }
+        //Email Confirmation token expires in 1 hour
+        public required DateTime CreationDate { get; set; }
+    }
+
+    public class UserPasswordForgotToken 
+    {
+        public int Id { get; set; }
+        public required Guid Guid { get; set; }
+        public int UserId { get; set; }
+        //Password forgot token expires in 1 hour
+        public DateTime CreationDate { get; set; }
     }
 
     public class User

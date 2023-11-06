@@ -226,7 +226,7 @@
             </div>
         </div>
         <div class="form-group">
-            <input id="register-token" class="input" @bind="RegisterToken" placeholder="" required>
+            <input id="register-token" class="input" @bind="user.RegisterToken" placeholder="" required>
             <label for="register-token" class="label">Register GUID</label>
         </div>
         <div class="form-group">
@@ -356,12 +356,10 @@
 </EditForm>
 
 @code {
-    Guid ignore;
     bool containsEight = false;
     bool containsUpper = false;
     bool containsDigit = false;
     bool containsSpecial = false;
-    string RegisterToken = "";
     public string passwordConfirm = "";
 
     float passwordRating => ratePassword(user.Password);
@@ -419,7 +417,7 @@
             Password = "",
             FullName = "",
             BirthDate = DateTime.MinValue,
-            RegisterToken = Guid.Empty
+            RegisterToken = "",
         };
 
     void togglePass() {
@@ -437,7 +435,7 @@
                 FullName = user.FullName,
                 BirthDate = user.BirthDate,
                 Password = user.Password,
-                RegisterToken = Guid.Parse(RegisterToken)
+                RegisterToken = user.RegisterToken
             });
             NavigationManager.NavigateTo("/login");
         } catch (Exception e) {

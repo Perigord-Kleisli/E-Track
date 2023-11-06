@@ -12,7 +12,9 @@ namespace ETrack.Api.Repositories.Contracts
 
        Task<bool> addUser(User user);
        Task<IEnumerable<Student>> getChildren(int userId);
-       Task AddToken(Guid guid, Role role);
-       Task<Role?> GetToken(Guid guid);
+       Task<Role> GetToken(string uid);
+       Task<UserRegisterToken> GenToken(Role role);
+       Task<Guid> CreateConfirmationToken(User unconfirmedUser);
+       Task UseConfirmationToken(Guid id);
     }
 }
