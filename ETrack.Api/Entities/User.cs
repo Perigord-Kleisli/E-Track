@@ -5,6 +5,12 @@ using ETrack.Models.Dtos;
 namespace ETrack.Api.Entities
 {
 
+    public class Token
+    {
+        public int Id { get; set; }
+        public Role Role { get; set; }
+        public Guid Guid { get; set; }
+    }
 
     public class User
     {

@@ -13,6 +13,7 @@ namespace ETrack.Api.Data
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<SchoolDay> SchoolDays { get; set; }
         public DbSet<Activity> Activities { get; set; }
+        public DbSet<Token> RegisterTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

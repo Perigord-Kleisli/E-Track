@@ -26,6 +26,13 @@ namespace ETrack.Api.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserRegisterDto request) {
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            var roles = await authRepository.GetToken(request.RegisterToken);
+
+            if (roles is null)
+            {
+                return BadRequest("Register Token Does Not Exist");
+            }
+
             var user = new User {
                 Email = request.Email,
                 FullName = request.FullName,
@@ -33,18 +40,29 @@ namespace ETrack.Api.Controllers
                 LastName = request.LastName,
                 PasswordHash = passwordHash,
                 BirthDate = request.BirthDate,
-                Roles = Role.Parent | Role.Teacher | Role.Admin,
+                Roles = roles.GetValueOrDefault(),
                 CreationDate = DateTime.Now, 
             };
 
-            if (await authRepository.addUser(user))
-            {
-                return Ok(user);
-            }
-            else 
+
+            if (!await authRepository.addUser(user))
             {
                 return BadRequest($"'{request.Email}' is already taken");
             }
+
+            return Ok(user);
+        }
+        [HttpPost("registerToken"), Authorize(Roles ="Teacher,Admin")]
+        public async Task<ActionResult<Guid>> RegisterToken(CreateTokenDto request)
+        {
+            var guid = Guid.NewGuid();
+            var flag = Role.None;
+            if (request.isParent) flag = flag | Role.Parent;
+            if (request.isTeacher) flag = flag | Role.Teacher;
+            if (request.isAdmin) flag = flag | Role.Admin;
+
+            await authRepository.AddToken(guid, flag);
+            return Ok(guid);
         }
 
         [HttpGet("admintest"), Authorize(Roles = "Admin")]
@@ -57,7 +75,7 @@ namespace ETrack.Api.Controllers
         [HttpGet("teachertest"), Authorize(Roles = "Teacher")]
         public ActionResult<string> TestGetTeacher() 
         {
-            return Ok("You are a Teacher");
+            return Ok($"You are a Teacher {HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Sid).Value }");
         }
 
         [HttpGet("parenttest"), Authorize(Roles = "Parent")]
@@ -66,9 +84,15 @@ namespace ETrack.Api.Controllers
             return Ok("You are a Parent");
         }
 
+        [HttpGet("users"), Authorize(Roles = "Admin")]
+        public async Task<ActionResult<IEnumerable<UsersGetDto>>> GetUsers()
+        {
+            return Ok(await authRepository.GetUsers());
+        }
+
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(UserLoginDto request) {
-            var user = await authRepository.GetByUserByName(request.Email);
+            var user = await authRepository.GetByUserByEmail(request.Email);
             if (user is null) 
             {
                 return BadRequest($"Email {request.Email} not found");
@@ -84,6 +108,7 @@ namespace ETrack.Api.Controllers
             List<Claim> claims = new List<Claim> {
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.FullName),
+                new Claim(ClaimTypes.Sid, user.Id.ToString())
             };
 
             if (user.Roles.HasFlag(Role.Parent))
