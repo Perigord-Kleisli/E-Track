@@ -1,7 +1,10 @@
 ﻿@page "/test"
 @inject HttpClient Http
+@inject ILocalStorageService LocalStorage
 
 <PageTitle>Index</PageTitle>
+<button @onclick="GetToken" class="btn btn-primary"> show token </button>
+<p>bearer @token</p>
 
 <h1>Hello, world!</h1>
 
@@ -48,6 +51,11 @@
 
 @code 
 {
+    string token = "";
+    async void GetToken() 
+    {
+        token = await LocalStorage.GetItemAsync<string>("token");
+    }
     string adminResult = "";
     string teacherResult = "";
     string parentResult = "";

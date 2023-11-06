@@ -1,0 +1,125 @@
+@page "/admin-panel"
+@inject HttpClient Http
+
+<style>
+    .generated-guid {
+        font-size: large;
+        font-weight: bold;
+        margin: 1em;
+        padding: 0.25em;
+        border: 2px solid var(--primary-color);
+    }
+    .gen-guid-container {
+        display: flex;
+    }
+
+    .dropdown {
+        margin: 0.5em;
+    }
+</style>
+
+<AuthorizeView Roles="Admin" Context="Authcontext">
+    <Authorized>
+
+        <EditForm Model=@GenGUIDModel OnValidSubmit=@showGUID>
+            <div class="gen-guid-container">
+                <button class="btn btn-primary" type="submit">Generate Register GUID</button>
+                <div class="generated-guid" >
+                    <p>@generatedGUID</p>
+                </div>
+            </div>
+            <input @bind=GenGUIDModel.isParent  type="checkbox" name="parentCheckbox">
+            <label for="parentCheckbox">Parent</label>
+            <input @bind=GenGUIDModel.isTeacher type="checkbox" name="teacherCheckbox">
+            <label for="teacherCheckbox">Teacher</label>
+            <input @bind=GenGUIDModel.isAdmin type="checkbox" name="adminCheckbox">
+            <label for="adminCheckbox">Admin</label>
+        </EditForm>
+        
+        <br/>
+        <button class="btn btn-primary" @onclick="toggleTable">Show User table</button>
+        @if(showTable)
+        {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">FullName</th>
+                    <th scope="col">FirstName</th>
+                    <th scope="col">LastName</th>
+                    <th scope="col">PasswordHash</th>
+                    <th scope="col">Roles</th>
+                    <th scope="col">IsEmailConfirmed</th>
+                    <th scope="col">BirthDate</th>
+                    <th scope="col">CreationDate</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach(var user in users)
+            {
+                <tr>
+                    <th>@user.Id</th>
+                    <td>@user.Email</td>
+                    <td>@user.FullName</td>
+                    <td>@user.FirstName</td>
+                    <td>@user.LastName</td>
+                    <td>@user.PasswordHash</td>
+                    <td>@user.Roles</td>
+                    <td>@user.IsEmailConfirmed</td>
+                    <td>@user.BirthDate</td>
+                    <td>@user.CreationDate</td>
+                </tr>
+            }
+            </tbody> 
+        </table>
+        }
+        
+    </Authorized>
+    <NotAuthorized>
+        <p>User is not authorized to view this</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code 
+{
+
+    private GenGUID GenGUIDModel = new GenGUID();
+    public class GenGUID
+    {
+        public bool isParent;
+        public bool isTeacher;
+        public bool isAdmin;
+    }
+    List<UsersGetDto> users = new List<UsersGetDto>{};
+    string generatedGUID = "";
+
+    bool showTable = false;
+
+    void toggleTable() 
+    {
+        showTable = !showTable;
+    }
+
+    protected override async void OnInitialized()
+    {
+        base.OnInitialized();
+        var response = await Http.GetAsync("api/auth/users");
+        if (response.IsSuccessStatusCode)
+        {
+            users = await response.Content.ReadFromJsonAsync<List<UsersGetDto>>();
+        }
+    }
+    async void showGUID()
+    {
+        var response = await Http.PostAsJsonAsync("/api/auth/registerToken", new CreateTokenDto {
+            isParent = GenGUIDModel.isParent,
+            isTeacher = GenGUIDModel.isTeacher,
+            isAdmin = GenGUIDModel.isAdmin 
+        });
+        if (response.IsSuccessStatusCode)
+        {
+            generatedGUID = await response.Content.ReadAsStringAsync();
+        }
+    }
+}
