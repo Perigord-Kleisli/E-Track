@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link href='https://fonts.googleapis.com/css?family=Fira Sans' rel='stylesheet'>
+    <title>E-Track Email Verification</title>
+    <script src="confirmation.js" defer> </script>
+</head>
+
+<body>
+
+    <div class="confirmation-page">
+        <div class="header">
+            <img src="./icon.svg" width="120px">
+            <h1 class="header-text">E-Track</h1>
+        </div>
+        <hr class="divider" />
+        <div id="confirmation-spinner" class="lds-dual-ring"></div>
+        <div id="apiSuccessView" class="confirmation-body">
+            <h2 class="confirmation-header-subtitle">
+                Your email has been succesfully confirmed
+            </h2>
+            <p style="text-align: center; margin-top: 0.5em; font-size: large;">
+                you may now close this page and return to the login page
+            </p>
+        </div>
+        <div id="apiFailView" class="confirmation-body">
+            <h1 class="confirmation-header-subtitle">
+                Confirmation Unsuccesful
+            </h1>
+            <p>Something isn't quite right yet! You may ask for another confirmation link</p>
+            <form onsubmit="return resendConfirmation()"
+                  class="confirmation-fail-form">
+                <div class="email-input">
+                    <input id="email" class="input" type="email" name="emailToVerify" placeholder="" required>
+                    <label for="emailToVerify" class="label">Email Address</label>
+                </div>
+                <p id="resend-status">
+                    Resend error
+                </p>
+                <div id="resend-spinner" class="lds-dual-ring"></div>
+                <button class="resend-button" type="submit">
+                    resend confirmation link
+                </button>
+                <p class="timer-display">
+                    You can request another email in <span id="timer">00:00</span>
+                </p>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

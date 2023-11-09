@@ -16,5 +16,7 @@ namespace ETrack.Api.Repositories.Contracts
        Task<UserRegisterToken> GenToken(Role role);
        Task<Guid> CreateConfirmationToken(User unconfirmedUser);
        Task UseConfirmationToken(Guid id);
+
+       Task<Guid> CreatePasswordForgotToken(User user);
     }
 }

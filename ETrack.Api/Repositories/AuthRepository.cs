@@ -28,7 +28,8 @@ namespace ETrack.Api.Repositories
 
             await etrackDBContext.Users.AddAsync(user);
             await etrackDBContext.SaveChangesAsync();
-            return true;
+            return true;       // [HttpPost("generate-forgot-password-token")]
+        // public async Task;
         }
 
         public async Task<User?> GetByUserByEmail(string email)
@@ -123,9 +124,59 @@ namespace ETrack.Api.Repositories
             }
 
             var user = await etrackDBContext.Users.FindAsync(guidMatch.UserId);
-            user!.IsEmailConfirmed = true;
+
+            if (user is null) 
+            {
+                throw new Exception("User not found");
+            }
+
+            if (user.IsEmailConfirmed)
+            {
+                throw new Exception("User already has a confirmed email");
+            }
+
+            user.IsEmailConfirmed = true;
             etrackDBContext.EmailConfirmationTokens.Remove(guidMatch);
             await etrackDBContext.SaveChangesAsync();
+        }
+
+        public async Task<Guid> GeneratePasswordForgotToken(User user)
+        {
+            var guid = Guid.NewGuid();
+            var token = new UserPasswordForgotToken {
+                UserId = user.Id,
+                Guid = guid,
+                CreationDate = DateTime.Now
+            };
+            await etrackDBContext.PasswordForgotTokens.AddAsync(token);
+            await etrackDBContext.SaveChangesAsync();
+            return guid;
+        }
+
+        public async Task UsePasswordForgotToken(Guid guid)
+        {
+            var guidMatch = await etrackDBContext
+                .PasswordForgotTokens
+                .FirstOrDefaultAsync(x => x.Guid == guid);
+            if (guidMatch is null)
+            {
+                throw new Exception("GUID not found in database");
+            }
+
+            if (DateTime.Now > guidMatch.CreationDate.AddHours(1))
+            {
+                throw new Exception("Confirmation GUID is expired");
+            }
+
+            var user = await etrackDBContext.Users.FindAsync(guidMatch.UserId);
+            user!.IsEmailConfirmed = true;
+            etrackDBContext.PasswordForgotTokens.Remove(guidMatch);
+            await etrackDBContext.SaveChangesAsync();
+        }
+
+        public Task<Guid> CreatePasswordForgotToken(User user)
+        {
+            throw new NotImplementedException();
         }
     }
 }

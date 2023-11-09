@@ -226,13 +226,14 @@
             </div>
         </div>
         <div class="form-group">
-            <input id="register-token" class="input" @bind="user.RegisterToken" placeholder="" required>
-            <label for="register-token" class="label">Register GUID</label>
-        </div>
-        <div class="form-group">
             <input id="fullname" class="input" type="name" @bind="user.FullName" placeholder="" required>
             <label for="fullname" class="label">Full Name</label>
         </div>
+        <div class="form-group">
+            <input id="register-token" class="input" @bind="user.RegisterToken" placeholder="" required>
+            <label for="register-token" class="label">Register GUID</label>
+        </div>
+        
         <div class="form-group">
             <input id="birthdate" class="input" type="date" @bind="user.BirthDate" placeholder="" required>
             <label for="birthdate" class="label">Birth Date</label>
@@ -416,7 +417,7 @@
             Email = "",
             Password = "",
             FullName = "",
-            BirthDate = DateTime.MinValue,
+            BirthDate = DateTime.Now,
             RegisterToken = "",
         };
 
@@ -437,7 +438,7 @@
                 Password = user.Password,
                 RegisterToken = user.RegisterToken
             });
-            NavigationManager.NavigateTo("/login");
+            NavigationManager.NavigateTo($"/login/new-account/{user.Email}");
         } catch (Exception e) {
             errorMessage = e.Message;
         }

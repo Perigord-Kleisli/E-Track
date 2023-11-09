@@ -112,6 +112,9 @@
     }
     async void showGUID()
     {
+        if (!(GenGUIDModel.isParent || GenGUIDModel.isTeacher || GenGUIDModel.isAdmin)) {
+            return;
+        }
         var response = await Http.PostAsJsonAsync("/api/auth/generate-register-token", new CreateTokenDto {
             isParent = GenGUIDModel.isParent,
             isTeacher = GenGUIDModel.isTeacher,

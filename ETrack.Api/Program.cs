@@ -1,3 +1,4 @@
+using DotNet.RateLimiter;
 using ETrack.Api.Data;
 using ETrack.Api.Repositories;
 using ETrack.Api.Repositories.Contracts;
@@ -5,12 +6,9 @@ using ETrack.Api.Services;
 using ETrack.Api.Services.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
-using System.Net;
-using System.Net.Mail;
 using System.Text;
 internal class Program
 {
@@ -29,6 +27,7 @@ internal class Program
         builder.Services.AddScoped<IAuthRepository, AuthRepository>();
         builder.Services.AddScoped<IStudentRepository, StudentRepository>();
         builder.Services.AddScoped<IEmailService,EmailService>();
+        builder.Services.AddRateLimitService(builder.Configuration);
         builder.Services.AddSwaggerGen(options =>
         {
             options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
@@ -80,6 +79,8 @@ internal class Program
         app.UseAuthentication();
 
         app.UseAuthorization();
+
+        app.UseStaticFiles();
 
         app.MapControllers();
 

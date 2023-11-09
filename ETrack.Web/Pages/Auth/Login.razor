@@ -1,28 +1,28 @@
 @page "/login"
+@page "/login/new-account/{newlyRegisteredAccount}"
 
 @layout NoMenuLayout
 @inject AuthenticationStateProvider AuthStateProvider
 @inject ILocalStorageService LocalStorage
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
-
 <style>
-
     form {
         --text-color: #afafaf;
         background: white;
     }
 
-    @@media only screen  and (min-width: 550px) {
+    @@media only screen and (min-width: 550px) {
         body {
             background-color: var(--primary-color);
         }
+
         form {
             --text-color: #afafaf;
             position: absolute;
             left: 50%;
             top: 50%;
-            transform: translate(-50%,-50%);
+            transform: translate(-50%, -50%);
             max-width: 75%;
             min-width: 70ch;
             border: 1em solid var(--primary-color);
@@ -67,7 +67,7 @@
         border: 2px solid #0b5ed7
     }
 
-    .input:invalid:not(:placeholder-shown) + .label {
+    .input:invalid:not(:placeholder-shown)+.label {
         color: red;
     }
 
@@ -97,8 +97,8 @@
         border-radius: 100%;
     }
 
-    .form-group:focus-within .label, 
-    .input:not(:placeholder-shown) + .label{
+    .form-group:focus-within .label,
+    .input:not(:placeholder-shown)+.label {
         transform: scale(0.8) translateY(calc(-1rem - 6px)) translateX(1em);
         border: white solid 6px;
     }
@@ -111,7 +111,7 @@
         color: white;
         border: 0px;
         background-color: var(--secondary-color);
-    }    
+    }
 
     .login-btn:active {
         background-color: var(--secondary-color-light);
@@ -143,7 +143,7 @@
         display: none;
     }
 
-    .input:not(:placeholder-shown) ~ .toggle-password {
+    .input:not(:placeholder-shown)~.toggle-password {
         display: block;
     }
 
@@ -157,12 +157,6 @@
         border: 10px solid gray;
     }
 
-    .error-message {
-        border: 2px solid red;
-        color: red;
-        padding: 0.5em;
-        background-color: pink;
-    }
 
     .no-account {
         text-align: center;
@@ -173,34 +167,32 @@
 
 <EditForm Model="user" OnValidSubmit="HandleLogin">
     <div class="form-header">
-    <span class="material-icons header-icon">face</span>
-    <h3>Log In</h3>
+        <span class="material-icons header-icon">face</span>
+        <h3>Log In</h3>
     </div>
+    @if (confirmStatus is not null) {
+        <p class="@(confirmStatusSucceeded ? "success-message" : "error-message" )">
+            @confirmStatus
+        </p>
+    }
     <DataAnnotationsValidator />
     <div class="form-group">
         <input id="email" class="input" type="email" @bind="user.Email" placeholder="" required>
         <label for="email" class="label">Email Address</label>
     </div>
     <div class="form-group">
-        <input 
-            id="password" 
-            class="input password-input" 
-            type="@(showPassword ? "text" : "password")" 
-            @bind="user.Password" 
-            placeholder="" 
-            required>
+        <input id="password" class="input password-input" type="@(showPassword ? "text" : "password")"
+            @bind="user.Password" placeholder="" required>
         <label for="password" class="label">Password</label>
-        <span 
-            class="toggle-password material-icons" 
-            @onclick="togglePass"
-           >
-           @(showPassword ? "visibility" : "visibility_off")
+        <span class="toggle-password material-icons" @onclick="togglePass">
+            @(showPassword ? "visibility" : "visibility_off")
         </span>
     </div>
-    @* <p class="text-danger">@errorMessage</p> *@
-    @if(errorMessage is not null) {
+    @if (errorMessage is not null)
+    {
         <div class="error-message">@errorMessage</div>
     }
+
     <button type="submit" class="login-btn">Log In</button>
     <p class="no-account">Don't have an account? <a href="/signup">register</a></p>
     <ValidationSummary />
@@ -209,37 +201,65 @@
 
 @code {
 
+    [Parameter]
+    public string? newlyRegisteredAccount { get; set; }
+
     bool showPassword = false;
     string? errorMessage = null;
 
-    public string? email {get; set; }
-
-        protected override void OnInitialized()
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if (newlyRegisteredAccount is not null)
         {
-            base.OnInitialized();
-            if (email is not null) 
+            user.Email = newlyRegisteredAccount;
+        }
+    }
+
+    string? confirmStatus = null;
+    bool confirmStatusSucceeded = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        if (newlyRegisteredAccount is not null)
+        {
+            try 
             {
-                user.Email = email;
+                confirmStatus = $"The confirmation link will be emailed to your account '{newlyRegisteredAccount}' shortly";
+                confirmStatusSucceeded = true;
+                await UserService.UserConfirm(newlyRegisteredAccount);
+            }
+            catch (Exception e)
+            {
+                confirmStatusSucceeded = false;
+                confirmStatus = e.Message;
             }
         }
-        UserLoginDto user = new UserLoginDto
+    }
+
+    UserLoginDto user = new UserLoginDto
         {
             Email = "",
             Password = ""
         };
 
-    void togglePass() {
+    void togglePass()
+    {
         showPassword = !showPassword;
     }
 
     async Task HandleLogin()
     {
-        try {
+        try
+        {
             var token = await UserService.UserLogin(user);
             await LocalStorage.SetItemAsync("token", token);
             await AuthStateProvider.GetAuthenticationStateAsync();
             NavigationManager.NavigateTo("/");
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             errorMessage = e.Message;
         }
     }

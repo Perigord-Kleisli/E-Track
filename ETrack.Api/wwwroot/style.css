@@ -1,0 +1,238 @@
+:root {
+    --secondary-color: #8F4E8B;
+    --secondary-color-light: #a75fa2;
+    --secondary-color-dark: #743b70;
+    --primary-color: #5E5086;
+}
+
+body {
+    background-color: var(--primary-color);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    margin: 0;
+    height: 100vh;
+}
+
+.confirmation-page {
+
+    /* position: absolute; */
+    background-color: white;
+    padding: 4em;
+    margin: 1em;
+    max-width: 500px;
+    min-width: 50%;
+    border: 1em solid var(--primary-color);
+    border-radius: 2em;
+    margin: 1em;
+    padding: 3em;
+    background: white;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+@media only screen and (max-width: 550px) {
+    .confirmation-page {
+        padding: 2em 0 2em;
+        margin: 0;
+        border-radius: 0;
+        border: 0;
+        width: 100%;
+    }
+
+    hr {
+        display: none;
+    }
+
+}
+
+
+.header {
+    justify-items: center;
+    align-items: center;
+    display: flex;
+    gap: 0px;
+    flex-direction: column;
+    margin-bottom: 0;
+}
+
+.header-text {
+    font-size: 6em;
+    margin: 0;
+    color: var(--primary-color);
+    font-family: 'Fira Sans';
+    font-weight: bolder;
+}
+
+.confirmation-header-subtitle {
+    font-size: large;
+    text-align: center;
+    margin: 2em 2em 0;
+}
+
+.confirmation-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#apiFailView .confirmation-header-subtitle {
+    font-size: 2em;
+}
+
+.confirmation-fail-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40ch;
+    margin: 1em;
+}
+
+.resend-button {
+    padding: 1em;
+    margin-top: 1em;
+    background-color: var(--secondary-color);
+    border-radius: 1em;
+    font-size: large;
+    color: white;
+    cursor: pointer;
+}
+
+.resend-button:active {
+    background-color: var(--secondary-color-light);
+}
+
+.resend-button:hover {
+    background-color: var(--secondary-color-dark);
+}
+
+.label {
+    color: var(--text-color);
+    font-size: 1.2rem;
+}
+
+.email-input {
+    display: grid;
+    width: 35ch;
+}
+
+.input .label {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.input {
+    border: 1px solid darkgray;
+    overflow: hidden;
+    outline: none;
+    width: 100%;
+    font-size: large;
+    padding: 1rem;
+    margin: 0 0 1em;
+    border-radius: 0.5rem;
+}
+
+.input:hover {
+    border-color: black;
+}
+
+.input:focus-within {
+    border: 2px solid #0b5ed7
+}
+
+.input:invalid:not(:placeholder-shown)+.label {
+    color: red;
+}
+
+.label {
+    z-index: 1;
+    position: absolute;
+    grid-column: 1;
+    grid-row: 1;
+    transform: translateY(1.2rem) translateX(1em);
+    transform-origin: 0%;
+    border: white solid 0px;
+    transition: transform 400ms;
+    background-color: white;
+    color: gray;
+    user-select: none;
+}
+
+.input:not(:placeholder-shown)+.label {
+    transform: scale(0.8) translateY(calc(-1rem - 6px)) translateX(1em);
+    border: white solid 6px;
+}
+
+#apiSuccessView {
+    display: none;
+}
+
+
+#apiFailView {
+    display: none;
+}
+
+.error-message {
+    background-color: pink;
+    border: 2px solid red;
+    padding: 1em;
+    color: red;
+    max-width: 60ch;
+}
+
+.success-message {
+    background-color: lightgreen;
+    border: 2px solid green;
+    padding: 1em;
+    color: green;
+    max-width: 60ch;
+}
+
+#resend-status {
+    display: none;
+}
+
+.lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    /* right: 100%; 
+  transform: translateX(-50%); */
+}
+
+.lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6px solid var(--secondary-color);
+    border-color: var(--secondary-color) transparent var(--secondary-color) transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.timer-display {
+    visibility: hidden;
+}
+
+.divider {
+    color: 2px solid gray;
+    width: 85%;
+}
+
+#resend-spinner {
+    display: none;
+}

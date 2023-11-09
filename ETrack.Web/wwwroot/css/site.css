@@ -45,6 +45,20 @@ a, .btn-link {
     color: red;
 }
 
+.error-message {
+    border: 2px solid red;
+    color: red;
+    padding: 0.5em;
+    background-color: pink;
+}
+
+.success-message {
+    border: 2px solid green;
+    color: green;
+    padding: 0.5em;
+    background-color: rgb(190, 248, 190);
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
