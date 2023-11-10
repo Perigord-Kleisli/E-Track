@@ -84,8 +84,8 @@
 @code 
 {
 
-    private GenGUID GenGUIDModel = new GenGUID();
-    public class GenGUID
+    protected GenGUID GenGUIDModel {get; set;} = new GenGUID();
+    protected class GenGUID
     {
         public bool isParent;
         public bool isTeacher;

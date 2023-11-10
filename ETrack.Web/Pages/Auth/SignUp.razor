@@ -1,217 +1,16 @@
 @page "/signup"
 @page "/register"
-@layout NoMenuLayout
-@inject HttpClient Http
+@layout AuthLayout
 @inject AuthenticationStateProvider AuthStateProvider
 @inject ILocalStorageService LocalStorage
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JS
 
-<style>
-
-    form {
-        --text-color: #afafaf;
-        background: white;
-    }
-
-    @@media only screen  and (min-width: 550px) {
-        body {
-            background-color: var(--primary-color);
-        }
-        form {
-            --text-color: #afafaf;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            max-width: 75%;
-            min-width: 70ch;
-            border: 1em solid var(--primary-color);
-            border-radius: 2em;
-            margin: 1em;
-            padding: 3em;
-            background: white;
-        }
-    }
-
-    .form-group {
-        width: 100%;
-        position: relative;
-        margin: 4rem auto 1rem;
-        display: grid;
-        margin-top: 2em;
-    }
-
-    .label {
-        color: var(--text-color);
-        font-size: 1.2rem;
-    }
-
-    .input {
-        overflow: hidden;
-        outline: none;
-        margin: 0;
-        width: 100%;
-        font-size: large;
-        padding: 1rem 1rem;
-        border: 1px solid var(--text-color);
-        border-radius: 0.5rem;
-    }
-
-    .input:hover {
-        border-color: black;
-    }
-
-    .input:focus-within {
-        border: 2px solid #0b5ed7
-    }
-
-    .input:invalid:not(:placeholder-shown) + .label {
-        color: red;
-    }
-
-    .label {
-        z-index: 1;
-        position: absolute;
-        grid-column: 1;
-        grid-row: 1;
-        transform: translateY(1.2rem) translateX(1em);
-        transform-origin: 0%;
-        border: white solid 0px;
-        transition: transform 400ms;
-        background-color: white;
-    }
-
-    .form-header {
-        text-align: center;
-        margin-bottom: 3em;
-    }
-
-    .header-icon {
-        font-size: 3em;
-        margin: 0.5em;
-        background-color: var(--primary-color);
-        border: 10px solid var(--primary-color);
-        color: white;
-        border-radius: 100%;
-    }
-
-    .form-group:focus-within .label, 
-    .input:not(:placeholder-shown) + .label{
-        transform: scale(0.8) translateY(calc(-1rem - 6px)) translateX(1em);
-        border: white solid 6px;
-    }
-
-    .login-btn {
-        width: 100%;
-        margin-top: 1em;
-        border-radius: 0.5rem;
-        padding: 0.5em;
-        color: white;
-        border: 0px;
-        background-color: var(--secondary-color);
-    }    
-
-    .login-btn:active {
-        background-color: var(--secondary-color-light);
-    }
-
-    .login-btn:hover {
-        background-color: var(--secondary-color-dark);
-    }
-
-    footer {
-        text-align: center;
-        color: gray;
-        width: 100%;
-        margin-top: 2em;
-    }
-
-    .toggle-password {
-        cursor: pointer;
-        position: absolute;
-        font-size: 1.2em;
-        grid-column: 1;
-        grid-row: 1;
-        right: 0.5em;
-        top: 0.5em;
-        border: 10px solid transparent;
-        user-select: none;
-        transition: border 100ms, background-color 100ms;
-        border-radius: 100%;
-        display: none;
-    }
-
-    .input:not(:placeholder-shown) ~ .toggle-password {
-        display: block;
-    }
-
-    .input:not(:placeholder-shown) ~ .password-rating {
-        transform: scaleY(1);
-    }
-
-    .password-ratelist {
-        margin-top: 0;
-        list-style: none;
-        height: 0;
-        margin: 0;
-        transform: translateY(1em) scaleY(0);
-        transform-origin: 0%;
-        transition: transform 500ms, height 300ms;
-    }
-
-    .ratelist-item-correct {
-        color: green;
-    }
-    .ratelist-item-incorrect {
-        color: red;
-    }
-
-    .input:not(:placeholder-shown) ~ .password-ratelist {
-        transform: translateY(0) scaleY(1);
-        margin-top: 0.5em;
-        height: auto;
-    }
-
-    .toggle-password:hover {
-        background-color: lightgray;
-        border: 10px solid lightgray;
-    }
-
-    .toggle-password:active {
-        background-color: gray;
-        border: 10px solid gray;
-    }
-
-    .error-message {
-        border: 2px solid red;
-        color: red;
-        padding: 0.5em;
-        background-color: pink;
-    }
-
-    .form-input-container {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .form-row {
-        display: block;
-    }
-
-    @@media all  and (min-width: 550px) {
-        .form-row {
-            display: flex;
-            gap: 2em;
-        }
-    }
-
-</style>
-
 <EditForm Model="user" OnValidSubmit="HandleLogin">
     <div class="form-header">
-    <span class="material-icons header-icon">face</span>
-    <h3>Sign Up</h3>
+        <span class="material-icons header-icon">face</span>
+        <h3>Sign Up</h3>
     </div>
     <DataAnnotationsValidator />
     <div class="form-input-container">
@@ -221,7 +20,7 @@
                 <label for="FirstName" class="label">First Name</label>
             </div>
             <div class="form-group">
-                <input id="LastName" class="input" type="name" @bind="user.LastName" placeholder=""required>
+                <input id="LastName" class="input" type="name" @bind="user.LastName" placeholder="" required>
                 <label for="LastName" class="label">Last Name</label>
             </div>
         </div>
@@ -233,7 +32,7 @@
             <input id="register-token" class="input" @bind="user.RegisterToken" placeholder="" required>
             <label for="register-token" class="label">Register GUID</label>
         </div>
-        
+
         <div class="form-group">
             <input id="birthdate" class="input" type="date" @bind="user.BirthDate" placeholder="" required>
             <label for="birthdate" class="label">Birth Date</label>
@@ -243,29 +42,18 @@
             <label for="email" class="label">Email Address</label>
         </div>
         <div class="form-group">
-            <input 
-                id="password" 
-                class="input" 
-                type="@(showPassword ? "text" : "password")" 
-                @bind="user.Password" 
-                @bind:event="oninput"
-                placeholder="" 
-                required>
+            <input id="password" class="input" type="@(showPassword ? "text" : "password")" @bind="user.Password"
+                @bind:event="oninput" placeholder="" required>
             <label for="password" class="label">Password</label>
-            <span 
-                class="toggle-password material-icons" 
-                @onclick="togglePass"
-                >@(showPassword ? "visibility" : "visibility_off")</span>
+            <span class="toggle-password material-icons" @onclick="togglePass">@(showPassword ? "visibility" :
+                "visibility_off")</span>
             <svg class="password-rating" viewBox="0 0 100 1" height="1em" width="100%">
                 <g fill="none" stroke="@passwordRatingColor" stroke-width="2">
-                    <path 
-                        stroke-linecap="butt" 
-                        stroke-dasharray="21,3" 
-                        d="M 2 2 l @((passwordRating * 92)) 0" />
+                    <path stroke-linecap="butt" stroke-dasharray="21,3" d="M 2 2 l @((passwordRating * 92)) 0" />
                 </g>
             </svg>
             <ul class="password-ratelist">
-                @if(containsEight) 
+                @if (containsEight)
                 {
                     <li class="ratelist-item-correct">
                         <span class="material-icons">done</span>
@@ -279,7 +67,7 @@
                         Should contain atleast 8 characters
                     </li>
                 }
-                @if(containsUpper) 
+                @if (containsUpper)
                 {
                     <li class="ratelist-item-correct">
                         <span class="material-icons">done</span>
@@ -293,7 +81,7 @@
                         Should contain an uppercase letter
                     </li>
                 }
-                @if(containsDigit) 
+                @if (containsDigit)
                 {
                     <li class="ratelist-item-correct">
                         <span class="material-icons">done</span>
@@ -307,7 +95,7 @@
                         Should contain a digit
                     </li>
                 }
-                @if(containsSpecial) 
+                @if (containsSpecial)
                 {
                     <li class="ratelist-item-correct">
                         <span class="material-icons">done</span>
@@ -325,33 +113,27 @@
         </div>
 
         <div class="form-group">
-            <input 
-                id="passwordconfirm" 
-                class="input" 
-                type="@(showPassword ? "text" : "password")" 
-                @bind="passwordConfirm" 
-                @bind:event="oninput"
-                placeholder="" 
-                required />
+            <input id="passwordconfirm" class="input" type="@(showPassword ? "text" : "password")"
+                @bind="passwordConfirm" @bind:event="oninput" placeholder="" required />
             <label for="passwordconfirm" class="label">
                 Confirm Password
             </label>
-            <span 
-                class="toggle-password material-icons" 
-                @onclick="togglePass"
-                >@(showPassword ? "visibility" : "visibility_off")
+            <span class="toggle-password material-icons" @onclick="togglePass">@(showPassword ? "visibility" :
+                "visibility_off")
             </span>
-            @if(user.Password != passwordConfirm) 
+            @if (user.Password != passwordConfirm)
             {
                 <p style="color: red; margin: 0.5em">Passwords do not match</p>
                 JS.InvokeVoidAsync("validatePasswords");
             }
         </div>
     </div>
-    @if(errorMessage is not null) {
+    @if (errorMessage is not null)
+    {
         <div class="error-message">@errorMessage</div>
     }
     <button type="submit" class="login-btn">Sign Up</button>
+    <p class="has-account">Already have an account? <a href="/login">login</a></p>
     <ValidationSummary />
     <footer>Copyright © Group Haskell 2023.</footer>
 </EditForm>
@@ -364,32 +146,33 @@
     public string passwordConfirm = "";
 
     float passwordRating => ratePassword(user.Password);
-    string passwordRatingColor => 
-        "#" +
-        (((int)(256 - passwordRating * 255)).ToString("X2")) + 
-        (((int)(passwordRating * 255)).ToString("X2")) + 
-        "50";
+    string passwordRatingColor =>
+    "#" +
+    (((int)(256 - passwordRating * 255)).ToString("X2")) +
+    (((int)(passwordRating * 255)).ToString("X2")) +
+    "50";
 
-    float ratePassword(string pass) {
+    float ratePassword(string pass)
+    {
         float passRating = Math.Min(0.25f, (pass.Length / 8f) / 4f);
         if (pass.Length / 8f >= 1f)
         {
             containsEight = true;
         }
-        else 
+        else
         {
             containsEight = false;
         }
-        if (pass.Any(x => char.IsUpper(x))) 
+        if (pass.Any(x => char.IsUpper(x)))
         {
             passRating += 0.25f;
             containsUpper = true;
         }
-        else 
+        else
         {
             containsUpper = false;
         }
-        if (pass.Any(x => char.IsDigit(x))) 
+        if (pass.Any(x => char.IsDigit(x)))
         {
             passRating += 0.25f;
             containsDigit = true;
@@ -398,12 +181,12 @@
         {
             containsDigit = false;
         }
-        if (pass.Any(x => !(char.IsLetter(x) || char.IsDigit(x)) )) 
+        if (pass.Any(x => !(char.IsLetter(x) || char.IsDigit(x))))
         {
             passRating += 0.25f;
             containsSpecial = true;
         }
-        else 
+        else
         {
             containsSpecial = false;
         }
@@ -421,25 +204,30 @@
             RegisterToken = "",
         };
 
-    void togglePass() {
+    void togglePass()
+    {
         showPassword = !showPassword;
     }
 
     async Task HandleLogin()
     {
 
-        try {
-            await UserService.UserRegister(new UserRegisterDto {
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                FullName = user.FullName,
-                BirthDate = user.BirthDate,
-                Password = user.Password,
-                RegisterToken = user.RegisterToken
-            });
+        try
+        {
+            await UserService.UserRegister(new UserRegisterDto
+                {
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    FullName = user.FullName,
+                    BirthDate = user.BirthDate,
+                    Password = user.Password,
+                    RegisterToken = user.RegisterToken
+                });
             NavigationManager.NavigateTo($"/login/new-account/{user.Email}");
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             errorMessage = e.Message;
         }
     }

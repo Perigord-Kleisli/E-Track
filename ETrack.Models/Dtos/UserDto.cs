@@ -45,6 +45,12 @@ namespace ETrack.Models.Dtos
         public required DateTime CreationDate { get; set; }
     }
 
+    public class ResetPasswordDto 
+    {
+        public Guid guid { get; set; }
+        public required string password { get; set; }
+    }
+
     public class CreateTokenDto
     {
         public bool isParent { get; set; }     

@@ -1,0 +1,21 @@
+@inherits LayoutComponentBase
+
+<style>
+
+    body {
+        height: 100vh;
+        display: grid;
+        place-items: center;
+    }
+    @@media only screen and (min-width: 550px) {
+        body {
+            background-color: var(--primary-color);
+        }
+    }
+</style>
+
+<div class="page">
+    <div class="content px-4">
+        @Body
+    </div>
+</div>

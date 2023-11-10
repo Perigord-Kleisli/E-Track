@@ -1,0 +1,23 @@
+.content {
+    --text-color: #afafaf;
+    background: white;
+}
+
+@media only screen and (min-width: 550px) {
+    .page {
+        display: grid;
+        place-items: center;
+        height: 100vh;
+    }
+
+    .content {
+        --text-color: #afafaf;
+        max-width: 75%;
+        min-width: 70ch;
+        border: 1em solid var(--primary-color);
+        border-radius: 2em;
+        margin: 1em;
+        padding: 3em;
+        background: white;
+    }
+}

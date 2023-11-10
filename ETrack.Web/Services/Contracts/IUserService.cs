@@ -6,6 +6,7 @@ namespace ETrack.Web.Services.Contracts
     {
         Task<string> UserLogin(UserLoginDto userLoginDto);
         Task UserConfirm(string email);
+        Task UserPasswordReset(string email);
         Task UserRegister(UserRegisterDto userRegisterDto);
     }
 }

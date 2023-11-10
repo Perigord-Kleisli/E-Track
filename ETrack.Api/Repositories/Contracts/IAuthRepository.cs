@@ -18,5 +18,6 @@ namespace ETrack.Api.Repositories.Contracts
        Task UseConfirmationToken(Guid id);
 
        Task<Guid> CreatePasswordForgotToken(User user);
+       Task UsePasswordForgotToken(Guid id, string password);
     }
 }

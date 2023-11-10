@@ -63,6 +63,29 @@ namespace ETrack.Web.Services
             }
         }
 
+        public async Task UserPasswordReset(string email)
+        {
+            try
+            {
+                var response = await httpClient.PostAsync(
+                    $"/api/Auth/reset-password-token?email={email}"
+                    , new FormUrlEncodedContent (new[] {
+                        new KeyValuePair<string,string>("","")
+                    })
+                    );
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var message = await response.Content.ReadAsStringAsync();
+                    throw new Exception(message);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task UserRegister(UserRegisterDto userRegisterDto)
         {
             try

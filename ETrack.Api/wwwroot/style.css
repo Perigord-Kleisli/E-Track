@@ -16,8 +16,6 @@ body {
 }
 
 .confirmation-page {
-
-    /* position: absolute; */
     background-color: white;
     padding: 4em;
     margin: 1em;
@@ -69,7 +67,10 @@ body {
 .confirmation-header-subtitle {
     font-size: large;
     text-align: center;
-    margin: 2em 2em 0;
+}
+
+p {
+    text-align: center;
 }
 
 .confirmation-body {
@@ -108,9 +109,10 @@ body {
     background-color: var(--secondary-color-dark);
 }
 
-.label {
+label {
     color: var(--text-color);
     font-size: 1.2rem;
+    z-index: -1;
 }
 
 .email-input {
@@ -118,12 +120,12 @@ body {
     width: 35ch;
 }
 
-.input .label {
+input label {
     grid-column: 1;
     grid-row: 1;
 }
 
-.input {
+input {
     border: 1px solid darkgray;
     overflow: hidden;
     outline: none;
@@ -134,19 +136,19 @@ body {
     border-radius: 0.5rem;
 }
 
-.input:hover {
+input:hover {
     border-color: black;
 }
 
-.input:focus-within {
+input:focus-within {
     border: 2px solid #0b5ed7
 }
 
-.input:invalid:not(:placeholder-shown)+.label {
+input:invalid:not(:placeholder-shown)+label {
     color: red;
 }
 
-.label {
+label {
     z-index: 1;
     position: absolute;
     grid-column: 1;
@@ -160,7 +162,7 @@ body {
     user-select: none;
 }
 
-.input:not(:placeholder-shown)+.label {
+input:not(:placeholder-shown)+label {
     transform: scale(0.8) translateY(calc(-1rem - 6px)) translateX(1em);
     border: white solid 6px;
 }
@@ -198,8 +200,6 @@ body {
     display: inline-block;
     width: 80px;
     height: 80px;
-    /* right: 100%; 
-  transform: translateX(-50%); */
 }
 
 .lds-dual-ring:after {
@@ -234,5 +234,97 @@ body {
 }
 
 #resend-spinner {
+    display: none;
+}
+
+.password-rating>ul>li {
+    list-style: none;
+}
+
+#rating-1 {
+    margin: 0.5em;
+    color: red;
+}
+
+#rating-2 {
+    margin: 0.5em;
+    color: red;
+}
+
+#rating-3 {
+    margin: 0.5em;
+    color: red;
+}
+
+#rating-4 {
+    margin: 0.5em;
+    margin-bottom: 2em;
+    color: red;
+}
+
+#password-toggle {
+    user-select: none;
+    position: absolute;
+    cursor: pointer;
+    border: 5px transparent solid;
+    border-radius: 100%;
+    transform: translate(12.5em, 0.5em);
+    visibility: hidden;
+}
+
+#newPassword:not(:placeholder-shown)~#password-toggle {
+    visibility: visible;
+}
+
+.password-rating {
+    display: none;
+}
+
+#newPassword:not(:placeholder-shown)~ .password-rating {
+    display: block;
+}
+
+
+#password-toggle:hover {
+    background-color: lightgray;
+    border: 5px lightgray solid;
+}
+
+#password-toggle:active {
+    background-color: gray;
+    border: 5px gray solid;
+}
+
+#confirm-password-toggle {
+    user-select: none;
+    position: absolute;
+    cursor: pointer;
+    border: 5px transparent solid;
+    border-radius: 100%;
+    transform: translate(12.5em, 0.5em);
+    visibility: hidden;
+}
+
+#confirmPassword:not(:placeholder-shown)~#confirm-password-toggle {
+    visibility: visible;
+}
+
+#confirm-password-toggle:hover {
+    background-color: lightgray;
+    border: 5px lightgray solid;
+}
+
+#confirm-password-toggle:active {
+    background-color: gray;
+    border: 5px gray solid;
+}
+
+#passMismatch {
+    margin: 0;
+    padding: 0;
+    margin-left: 1em;
+    align-self: baseline;
+    text-align: left;
+    color: red;
     display: none;
 }

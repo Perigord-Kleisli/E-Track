@@ -1,0 +1,71 @@
+.form-group {
+    width: 100%;
+    position: relative;
+    margin: 4rem auto 0rem;
+    display: grid;
+    grid-column: 1;
+    grid-row: 1;
+    margin-top: 2em;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 3em;
+}
+
+.header-icon {
+    font-size: 3em;
+    margin: 0.5em;
+    background-color: var(--primary-color);
+    border: 10px solid var(--primary-color);
+    color: white;
+    border-radius: 100%;
+}
+
+footer {
+    text-align: center;
+    color: gray;
+    width: 100%;
+    margin-top: 2em;
+}
+
+.toggle-password {
+    cursor: pointer;
+    position: absolute;
+    font-size: 1.2em;
+    grid-column: 1;
+    grid-row: 1;
+    right: 0.5em;
+    top: 0.7em;
+    border: 10px solid transparent;
+    user-select: none;
+    transition: border 100ms, background-color 100ms;
+    border-radius: 100%;
+    display: none;
+}
+
+.input:not(:placeholder-shown)~.toggle-password {
+    display: block;
+}
+
+.toggle-password:hover {
+    background-color: lightgray;
+    border: 10px solid lightgray;
+}
+
+.toggle-password:active {
+    background-color: gray;
+    border: 10px solid gray;
+}
+
+.no-account {
+    text-align: center;
+    color: rgb(83, 83, 83);
+    margin: 1em;
+}
+
+.forgot-password {
+    font-size: small;
+    padding: 1em;
+    margin-left: 1em;
+}
