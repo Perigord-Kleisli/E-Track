@@ -8,17 +8,17 @@
 
 <h1>Hello, world!</h1>
 
-<AuthorizeView Roles="Admin">
+<AuthorizeView Roles="@RoleType.Admin">
     <Authorized>
         <p>You are an Admin</p>
     </Authorized>
 </AuthorizeView>
-<AuthorizeView Roles="Teacher">
+<AuthorizeView Roles="@RoleType.Teacher">
     <Authorized>
         <p>You are a Teacher</p>
     </Authorized>
 </AuthorizeView>
-<AuthorizeView Roles="Parent">
+<AuthorizeView Roles="@RoleType.Parent">
     <Authorized>
         <p>You are a Parent</p>
     </Authorized>
@@ -31,9 +31,9 @@
         {
             <p>@claim.Type : @claim.Value</p>
         }
-        <p>@context.User.IsInRole("Admin")</p>
-        <p>@context.User.IsInRole("Teacher")</p>
-        <p>@context.User.IsInRole("Parent")</p>
+        <p>@context.User.IsInRole(RoleType.Parent)</p>
+        <p>@context.User.IsInRole(RoleType.Teacher)</p>
+        <p>@context.User.IsInRole(RoleType.Admin)</p>
     </Authorized>
     <NotAuthorized>
         <p>You are unauthorized</p>

@@ -4,7 +4,6 @@ using ETrack.Models.Dtos;
 
 namespace ETrack.Api.Entities
 {
-
     public class UserRegisterToken
     {
         public int Id { get; set; }
@@ -39,7 +38,7 @@ namespace ETrack.Api.Entities
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public required string PasswordHash { get; set; }
-        public Role Roles {get; set; } = Role.None;
+        public required Role Roles {get; set; }
         public bool IsEmailConfirmed { get; set; } = false;
         public required DateTime BirthDate { get; set; }
         public required DateTime CreationDate { get; set; }

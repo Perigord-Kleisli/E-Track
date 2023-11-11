@@ -6,18 +6,18 @@ namespace ETrack.Api.Repositories.Contracts
 {
     public interface IAuthRepository
     {
-       Task<User?> GetUser(int id);
+       Task<User?> GetUserAsync(int id);
        Task<IEnumerable<User>> GetUsers();
-       Task<User?> GetByUserByEmail(string usernam);
+       Task<User?> GetByUserByEmailAsync(string usernam);
 
-       Task<bool> addUser(User user);
-       Task<IEnumerable<Student>> getChildren(int userId);
-       Task<Role> GetToken(string uid);
-       Task<UserRegisterToken> GenToken(Role role);
-       Task<Guid> CreateConfirmationToken(User unconfirmedUser);
-       Task UseConfirmationToken(Guid id);
+       Task<bool> addUserAsync(User user);
+       Task<IEnumerable<Student>> getChildrenAsync(int userId);
+       Task<Role> GetTokenAsync(string uid);
+       Task<UserRegisterToken> GenTokenAsync(Role role);
+       Task<Guid> CreateConfirmationTokenAsync(User unconfirmedUser);
+       Task UseConfirmationTokenAsync(Guid id);
 
-       Task<Guid> CreatePasswordForgotToken(User user);
-       Task UsePasswordForgotToken(Guid id, string password);
+       Task<Guid> CreatePasswordForgotTokenAsync(User user);
+       Task UsePasswordForgotTokenAsync(Guid id, string password);
     }
 }

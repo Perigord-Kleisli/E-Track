@@ -18,7 +18,7 @@ namespace ETrack.Api.Repositories
         }
 
         // Returns false if there already is a user with the same email
-        public async Task<bool> addUser(User user)
+        public async Task<bool> addUserAsync(User user)
         {
             var match = await etrackDBContext
                 .Users
@@ -31,20 +31,20 @@ namespace ETrack.Api.Repositories
             return true;      
         }
 
-        public async Task<User?> GetByUserByEmail(string email)
+        public async Task<User?> GetByUserByEmailAsync(string email)
         {
             return await etrackDBContext
              .Users
              .FirstOrDefaultAsync(user => user.Email == email);
         }
 
-        public async Task<IEnumerable<Student>> getChildren(int userId)
+        public async Task<IEnumerable<Student>> getChildrenAsync(int userId)
         {
             var user = await etrackDBContext.Users.FindAsync(userId);
             return user!.Children;
         }
 
-        public async Task<UserRegisterToken> GenToken(Role roles)
+        public async Task<UserRegisterToken> GenTokenAsync(Role roles)
         {
             var rand = new Random();
             var uid = (rand.Next() * 46656).ToString("X8");
@@ -65,7 +65,7 @@ namespace ETrack.Api.Repositories
             return token;
         }
 
-        public async Task<Role> GetToken(string uid)
+        public async Task<Role> GetTokenAsync(string uid)
         {
             var guidMatch = await etrackDBContext
                 .RegisterTokens
@@ -84,7 +84,7 @@ namespace ETrack.Api.Repositories
             return guidMatch.Role;
         }
 
-        public async Task<Guid> CreateConfirmationToken(User unconfirmedUser)
+        public async Task<Guid> CreateConfirmationTokenAsync(User unconfirmedUser)
         {
             var guid = Guid.NewGuid();
             var token = new UserEmailConfirmationToken {
@@ -97,7 +97,7 @@ namespace ETrack.Api.Repositories
             return guid;
         }
 
-        public async Task<User?> GetUser(int id)
+        public async Task<User?> GetUserAsync(int id)
         {
             return await etrackDBContext.Users.FindAsync(id);
         }
@@ -107,7 +107,7 @@ namespace ETrack.Api.Repositories
             return await etrackDBContext.Users.ToListAsync();
         }
 
-        public async Task UseConfirmationToken(Guid guid)
+        public async Task UseConfirmationTokenAsync(Guid guid)
         {
             var guidMatch = await etrackDBContext
                 .EmailConfirmationTokens
@@ -139,7 +139,7 @@ namespace ETrack.Api.Repositories
             await etrackDBContext.SaveChangesAsync();
         }
 
-        public async Task<Guid> CreatePasswordForgotToken(User user)
+        public async Task<Guid> CreatePasswordForgotTokenAsync(User user)
         {
             var guid = Guid.NewGuid();
             var token = new UserPasswordForgotToken {
@@ -152,7 +152,7 @@ namespace ETrack.Api.Repositories
             return guid;
         }
 
-        public async Task UsePasswordForgotToken(Guid guid, string password)
+        public async Task UsePasswordForgotTokenAsync(Guid guid, string password)
         {
             var guidMatch = await etrackDBContext
                 .PasswordForgotTokens

@@ -38,7 +38,7 @@ namespace ETrack.Api.Controllers
             Role roles; 
             try 
             {
-                roles = await authRepository.GetToken(request.RegisterToken);
+                roles = await authRepository.GetTokenAsync(request.RegisterToken);
             }   
             catch (Exception e) 
             {
@@ -56,7 +56,7 @@ namespace ETrack.Api.Controllers
                 CreationDate = DateTime.Now, 
             };
 
-            if (!await authRepository.addUser(user))
+            if (!await authRepository.addUserAsync(user))
             {
                 return BadRequest($"'{request.Email}' is already taken");
             }
@@ -67,14 +67,14 @@ namespace ETrack.Api.Controllers
         [HttpPost("reset-password-token")]
         [RateLimit(PeriodInSec = 90, Limit = 3)]
         public async Task<ActionResult> GetPasswordToken([EmailAddress] string email) {
-            var user =  await authRepository.GetByUserByEmail(email);
+            var user =  await authRepository.GetByUserByEmailAsync(email);
 
             if (user is null)
                 return BadRequest($"User email '{email}' not found");
             if (!user.IsEmailConfirmed)
                 return BadRequest("User email is not confirmed");
 
-            var resetPasswordToken = await authRepository.CreatePasswordForgotToken(user);
+            var resetPasswordToken = await authRepository.CreatePasswordForgotTokenAsync(user);
 
             var apiAddress = new Uri (Request.GetDisplayUrl());
             var baseUri = apiAddress.GetLeftPart(System.UriPartial.Authority);
@@ -92,14 +92,14 @@ namespace ETrack.Api.Controllers
         [RateLimit(PeriodInSec = 90, Limit = 3)]
         public async Task<ActionResult> GetConfirmationToken([EmailAddress] string emailToVerify) {
 
-            var user =  await authRepository.GetByUserByEmail(emailToVerify);
+            var user =  await authRepository.GetByUserByEmailAsync(emailToVerify);
 
             if (user is null)
                 return BadRequest($"User email '{emailToVerify}' not found");
             if (user.IsEmailConfirmed)
                 return BadRequest("User is already confirmed");
 
-            var confirmationToken =  await authRepository.CreateConfirmationToken(user);
+            var confirmationToken =  await authRepository.CreateConfirmationTokenAsync(user);
 
             var apiAddress = new Uri (Request.GetDisplayUrl());
             var baseUri = apiAddress.GetLeftPart(System.UriPartial.Authority);
@@ -117,7 +117,7 @@ namespace ETrack.Api.Controllers
         {
             try 
             {
-                await authRepository.UseConfirmationToken(confirmationGUID);
+                await authRepository.UseConfirmationTokenAsync(confirmationGUID);
                 return Ok();
             } 
             catch (Exception e)
@@ -130,7 +130,7 @@ namespace ETrack.Api.Controllers
         public async Task<ActionResult> ResetPassword(ResetPasswordDto request) {
             try 
             {
-                await authRepository.UsePasswordForgotToken(request.guid, request.password);
+                await authRepository.UsePasswordForgotTokenAsync(request.guid, request.password);
                 return Ok();
             } 
             catch (Exception e) 
@@ -139,38 +139,38 @@ namespace ETrack.Api.Controllers
             }
         }
 
-        [HttpPost("generate-register-token"), Authorize(Roles ="Teacher,Admin")]
+        [HttpPost("generate-register-token"), Authorize(Roles=RoleType.ParentOrTeacher)]
         public async Task<ActionResult<string>> GenerateRegisterToken(CreateTokenDto request)
         {
-            var flag = Role.None;
+            Role flag = 0b000;
             if (request.isParent) flag = flag | Role.Parent;
             if (request.isTeacher) flag = flag | Role.Teacher;
             if (request.isAdmin) flag = flag | Role.Admin;
 
-            var token  = await authRepository.GenToken(flag);
+            var token  = await authRepository.GenTokenAsync(flag);
             return Ok(token.Uid);
         }
 
-        [HttpGet("admintest"), Authorize(Roles = "Admin")]
+        [HttpGet("admintest"), Authorize(Roles = RoleType.Admin)]
         public ActionResult<string> TestGetAdmin() 
         {
             var x = HttpContext.User.Claims.Select(x => x.Value).Aggregate("", (x,accum) => x + accum );
             return Ok($"You are an admin {x}");
         }
 
-        [HttpGet("teachertest"), Authorize(Roles = "Teacher")]
+        [HttpGet("teachertest"), Authorize(Roles = RoleType.Teacher)]
         public ActionResult<string> TestGetTeacher() 
         {
             return Ok($"You are a Teacher {HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Sid).Value }");
         }
 
-        [HttpGet("parenttest"), Authorize(Roles = "Parent")]
+        [HttpGet("parenttest"), Authorize(Roles = RoleType.Parent)]
         public ActionResult<string> TestGetParent() 
         {
             return Ok("You are a Parent");
         }
 
-        [HttpGet("users"), Authorize(Roles = "Admin")]
+        [HttpGet("users"), Authorize(Roles = RoleType.Admin)]
         public async Task<ActionResult<IEnumerable<UsersGetDto>>> GetUsers()
         {
             return Ok(await authRepository.GetUsers());
@@ -178,7 +178,7 @@ namespace ETrack.Api.Controllers
 
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(UserLoginDto request) {
-            var user = await authRepository.GetByUserByEmail(request.Email);
+            var user = await authRepository.GetByUserByEmailAsync(request.Email);
             if (user is null) 
             {
                 return BadRequest($"Email {request.Email} not found");

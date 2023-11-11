@@ -11,7 +11,7 @@
 <hr class="@NavMenuCssClass navbar-break">
 <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="flex-column">
-        <AuthorizeView Roles="Admin">
+        <AuthorizeView Roles="@RoleType.Admin">
             <Authorized>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="admin-panel">
@@ -20,7 +20,7 @@
                 </div>
             </Authorized>
         </AuthorizeView>
-        <AuthorizeView Roles="Teacher">
+        <AuthorizeView Roles="@RoleType.Teacher">
             <Authorized>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="teacher-panel">
@@ -29,7 +29,7 @@
                 </div>
             </Authorized>
         </AuthorizeView>
-        <AuthorizeView Roles="Parent">
+        <AuthorizeView Roles="@RoleType.Parent" >
             <Authorized>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="parent-panel">
