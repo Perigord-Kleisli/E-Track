@@ -1,0 +1,17 @@
+@page "/children"
+
+<select @bind="@ChildId" class="student-selector">
+    <option value="0" selected disabled hidden>
+        Select Child Here
+    </option>
+    <option value="-1">Add Child</option>
+</select>
+
+@if(ChildId == -1) 
+{
+    <AddChildren />
+}
+
+@code {
+   public int ChildId {get; set; } 
+}

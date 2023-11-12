@@ -1,0 +1,24 @@
+<EditForm Model="@ChildRequestModel" OnSubmit="@SendRequest">
+    <div class="search-bar">
+        <InputText class="search-bar-input" @bind-Value="ChildRequestModel.searchParams" />
+        <button class="btn material-icons" type="submit">search</button>
+    </div>
+</EditForm>
+
+@code {
+    public string? search { get; set; }
+
+    public ChildRequest ChildRequestModel { get; set; } = new ChildRequest();
+    protected override void OnInitialized() => ChildRequestModel ??= new();
+
+    public class ChildRequest
+    {
+        public string? searchParams { get; set; }
+        public List<int> childId { get; set; } = new List<int>();
+    }
+
+    void SendRequest()
+    {
+        Console.WriteLine("Test");
+    }
+}

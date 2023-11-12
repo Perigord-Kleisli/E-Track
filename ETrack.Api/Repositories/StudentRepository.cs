@@ -1,4 +1,5 @@
 using ETrack.Api.Data;
+using ETrack.Api.Entities;
 using ETrack.Api.Repositories.Contracts;
 using ETrack.Models.Dtos;
 using Microsoft.EntityFrameworkCore;
@@ -13,18 +14,18 @@ namespace ETrack.Api.Repositories
         {
             this.eTrackDBContext = eTrackDBContext;
         }
-        public async Task addStudent(Student student)
+        public async Task addStudentAsync(Student student)
         {
             await eTrackDBContext.Students.AddAsync(student);
             await eTrackDBContext.SaveChangesAsync();
         }
 
-        public async Task<Student?> getStudentById(int id)
+        public async Task<Student?> getStudentByIdAsync(int id)
         {
             return await eTrackDBContext.Students.FindAsync(id);
         }
 
-        public async Task<IEnumerable<Student>> GetStudents()
+        public async Task<IEnumerable<Student>> GetStudentsAsync()
         {
             return await eTrackDBContext.Students.ToListAsync();
         }

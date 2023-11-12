@@ -6,10 +6,19 @@ namespace ETrack.Models.Dtos
     [Flags]
     public enum Role 
     {
-        None    = 0b000,
         Parent  = 0b100,
         Teacher = 0b010,
         Admin   = 0b001,
+    }
+
+    public class RoleType 
+    {
+        public const string Parent = "Parent";
+        public const string ParentOrTeacher = "Parent,Teacher";
+        public const string ParentOrAdmin = "Parent,Admin";
+        public const string Teacher = "Teacher";
+        public const string TeacherOrAdmin = "Teacher,Admin";
+        public const string Admin = "Admin";
     }
 
     public class UserLoginDto
@@ -39,7 +48,7 @@ namespace ETrack.Models.Dtos
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public required string PasswordHash { get; set; }
-        public Role Roles {get; set; } = Role.None;
+        public required Role Roles {get; set; }
         public bool IsEmailConfirmed { get; set; } = false;
         public required DateTime BirthDate { get; set; }
         public required DateTime CreationDate { get; set; }

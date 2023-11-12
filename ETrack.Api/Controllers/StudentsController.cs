@@ -1,3 +1,6 @@
+using System.Security.Claims;
+using ETrack.Api.Entities;
+using ETrack.Api.Extensions;
 using ETrack.Api.Repositories.Contracts;
 using ETrack.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
@@ -12,67 +15,64 @@ namespace ETrack.Api.Controllers
     {
         private readonly IStudentRepository studentRepository;
         private readonly IConfiguration configuration;
+        private readonly IAuthRepository authRepository;
 
-        public StudentsController(IStudentRepository studentRepository, IConfiguration configuration)
+        public StudentsController(IStudentRepository studentRepository, IConfiguration configuration, IAuthRepository authRepository)
         {
             this.studentRepository = studentRepository;
             this.configuration = configuration;
+            this.authRepository = authRepository;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<SimpleStudentDto>>> GetStudents()
         {
-            var students = await studentRepository.GetStudents();
+            var students = await studentRepository.GetStudentsAsync();
             if (students is null) return BadRequest();
-            return Ok(students.Select(x => new SimpleStudentDto { 
+            return Ok(students.Select(x => new SimpleStudentDto
+            {
                 Name = x.Name,
                 Grade = x.Grade,
                 Id = x.Id
             }));
         }
 
-        [HttpPost("add"), Authorize(Roles="Teacher")]
-        public async Task<ActionResult> AddStudent(AddStudentDto addStudentDto)
+        [HttpGet("{id}"), Authorize]
+        public async Task<ActionResult<StudentDto>> GetStudents(int id)
+        {
+            var user = await authRepository.GetUserAsync(int.Parse(getUserClaim(ClaimTypes.Sid)));
+            if (!(user!.Children.Any(x => x.Id == id) 
+                 || user.Students.Any(x => x.Id == id)))
+            {
+                return BadRequest($"User lacks permission to view student info");
+            }
+
+            var student = await studentRepository.getStudentByIdAsync(id);
+            if (student is null)
+            {
+                return BadRequest($"Student {id} not found");
+            }
+
+            return Ok(student.ConvertToDto());
+        }
+
+        [HttpPost, Authorize(Roles = RoleType.Teacher)]
+        public async Task<ActionResult> CreateStudentAsync(AddStudentDto addStudentDto)
         {
             var student = new Student
             {
                 Name = addStudentDto.Name,
                 Grade = addStudentDto.Grade,
             };
-            await studentRepository.addStudent(student);
+            await studentRepository.addStudentAsync(student);
             return Ok();
         }
 
-        [HttpGet("byid")]
-        public async Task<ActionResult<StudentDto>> GetStudent(int id)
+        private string getUserClaim(string claimType)
         {
-            var student = await studentRepository.getStudentById(id);
-            if (student is null)
-            {
-                return BadRequest($"Student {id} not found");
-            }
-
-            return Ok(new StudentDto
-            {
-                Id = student.Id,
-                Grade = student.Grade,
-                Name = student.Name,
-                Attendance = student.Attendance.Select(x => new SchoolDayDto
-                {
-                    Id = x.Id,
-                    Date = x.Date
-                }).ToList(),
-                Scores = student.Scores.Select(x => new CompletedActivityDto {
-                    Id = x.Id,
-                    Score = x.Score,
-                    Name = x.Name,
-                    TotalScore = x.TotalScore,
-                    Issuance =  (x.Issuance is null) ? null : new SchoolDayDto {
-                        Id = x.IssuanceId,
-                        Date = x.Issuance.Date
-                    }
-                }).ToList()
-            });
+            return HttpContext.User.Claims.First(x => x.Type == claimType).Value;
         }
+
     }
+
 }

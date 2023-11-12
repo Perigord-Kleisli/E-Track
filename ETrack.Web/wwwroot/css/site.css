@@ -6,6 +6,7 @@
     --secondary-color: #8F4E8B;
     --secondary-color-light: #a75fa2;
     --secondary-color-dark: #743b70;
+    --text-color: gray;
     --primary-color: #5E5086;
 }
 
@@ -111,7 +112,6 @@ input {
     overflow: hidden;
     outline: none;
     margin: 0;
-    width: 100%;
     font-size: large;
     padding: 1rem 1rem;
     border: 1px solid var(--text-color);
@@ -149,7 +149,6 @@ input:invalid:not(:placeholder-shown) + label {
 }
 
 .btn {
-    width: 100%;
     margin-top: 1em;
     border-radius: 0.5rem;
     padding: 0.5em;
@@ -170,7 +169,6 @@ input:invalid:not(:placeholder-shown) + label {
 
 .btn-gray {
     background-color: darkgray;
-    width: 100%;
     margin-top: 1em;
     border-radius: 0.5rem;
     padding: 0.5em;

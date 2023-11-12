@@ -15,7 +15,6 @@ internal partial class Program
         builder.Services.AddServerSideBlazor();
 
         //Address for the api server, to be replaced if the API gets hosted to a permanent domain
-
        builder.Services.AddBlazoredLocalStorage();
        builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5292") });
        builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthenticationStateProvider>();

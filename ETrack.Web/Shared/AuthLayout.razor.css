@@ -21,3 +21,15 @@
         background: white;
     }
 }
+
+.btn {
+    width: 100%;
+}
+
+::deep input {
+    width: 100%;
+}
+
+.btn .btn-gray {
+    width: 100%;
+}

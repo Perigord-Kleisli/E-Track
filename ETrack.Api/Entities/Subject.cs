@@ -1,8 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using ETrack.Api.Entities;
 
-namespace ETrack.Api
+namespace ETrack.Api.Entities
 {
     public class Subject
     {
@@ -22,6 +21,7 @@ namespace ETrack.Api
         [Key]
         public int IssuanceId { get; set; }
         [ForeignKey("IssuanceId")]
-        public SchoolDay? Issuance { get; set; }
+        public required SchoolDay Issuance { get; set; }
+        public DateTime? Deadline { get; set; }
     }
 }

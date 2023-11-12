@@ -1,0 +1,15 @@
+.search-bar {
+    display: flex;
+    justify-items: center;
+    width: 100%;
+}
+
+::deep .search-bar-input {
+    border-radius: 10px 0 0 10px;
+    width: 100%;
+}
+
+.search-bar .btn {
+    border-radius: 0 10px 10px 0;
+    margin: 0;
+}

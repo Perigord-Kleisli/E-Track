@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
-using System.Runtime.InteropServices;
 using System.Security.Claims;
 using DotNet.RateLimiter.ActionFilters;
 using ETrack.Api.Entities;
@@ -149,25 +148,6 @@ namespace ETrack.Api.Controllers
 
             var token  = await authRepository.GenTokenAsync(flag);
             return Ok(token.Uid);
-        }
-
-        [HttpGet("admintest"), Authorize(Roles = RoleType.Admin)]
-        public ActionResult<string> TestGetAdmin() 
-        {
-            var x = HttpContext.User.Claims.Select(x => x.Value).Aggregate("", (x,accum) => x + accum );
-            return Ok($"You are an admin {x}");
-        }
-
-        [HttpGet("teachertest"), Authorize(Roles = RoleType.Teacher)]
-        public ActionResult<string> TestGetTeacher() 
-        {
-            return Ok($"You are a Teacher {HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Sid).Value }");
-        }
-
-        [HttpGet("parenttest"), Authorize(Roles = RoleType.Parent)]
-        public ActionResult<string> TestGetParent() 
-        {
-            return Ok("You are a Parent");
         }
 
         [HttpGet("users"), Authorize(Roles = RoleType.Admin)]

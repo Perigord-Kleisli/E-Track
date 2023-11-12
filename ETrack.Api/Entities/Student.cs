@@ -1,4 +1,4 @@
-namespace ETrack.Api
+namespace ETrack.Api.Entities
 {
     public class Student
     {
@@ -9,25 +9,17 @@ namespace ETrack.Api
         public List<CompletedActivity> Scores { get; set; } = new List<CompletedActivity>();
     }
 
-    public class SchoolDay 
-    {
-        public int Id { get; set; }
-        public DateTime Date { get; set; }
-    }
- 
     public class CompletedActivity : Activity
     {
         public int Score { get; set; }
+    }
 
-        public static CompletedActivity ScoreActivity(Activity activity, int score) {
-            return new CompletedActivity {
-                Id = activity.Id,
-                Name = activity.Name,
-                TotalScore = activity.TotalScore,
-                Score = score,
-                Issuance = activity.Issuance,
-            };
-        }
+    public class IsChildRequest 
+    {
+        public int Id { get; set; }
+        public required DateTime CreationDate { get; set; }
+        public required User Parent { get; set; }
+        public required Student Student { get; set; }
 
     }
 }

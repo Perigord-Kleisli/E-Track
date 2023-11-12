@@ -12,10 +12,12 @@ namespace ETrack.Api.Data
         public DbSet<Student> Students { get; set; }
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<SchoolDay> SchoolDays { get; set; }
+        public DbSet<SchoolYear> SchoolYears { get; set; }
         public DbSet<Activity> Activities { get; set; }
         public DbSet<UserRegisterToken> RegisterTokens { get; set; }
         public DbSet<UserEmailConfirmationToken> EmailConfirmationTokens { get; set; }
         public DbSet<UserPasswordForgotToken> PasswordForgotTokens { get; set; }
+        public DbSet<Section> Sections { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

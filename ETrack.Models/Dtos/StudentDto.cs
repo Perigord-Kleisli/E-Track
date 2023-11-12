@@ -32,9 +32,10 @@ namespace ETrack.Models.Dtos
     public class CompletedActivityDto 
     {
         public int Id { get; set; }
-        public int Score { get; set; }
         public required string Name { get; set; }
-        public int TotalScore { get; set; }
-        public SchoolDayDto? Issuance { get; set; }
+        public required int Score { get; set; }
+        public required int TotalScore { get; set; }
+        public required SchoolDayDto Issuance { get; set; }
+        public required DateTime? Deadline { get; set; }
     }
 }

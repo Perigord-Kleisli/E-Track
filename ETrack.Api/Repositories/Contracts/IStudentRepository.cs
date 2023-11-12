@@ -1,11 +1,12 @@
+using ETrack.Api.Entities;
 using ETrack.Models.Dtos;
 
 namespace ETrack.Api.Repositories.Contracts
 {
     public interface IStudentRepository
     {
-        Task addStudent(Student student);
-        Task<Student?> getStudentById(int id);
-        Task<IEnumerable<Student>> GetStudents();
+        Task addStudentAsync(Student student);
+        Task<Student?> getStudentByIdAsync(int id);
+        Task<IEnumerable<Student>> GetStudentsAsync();
     }    
 }
