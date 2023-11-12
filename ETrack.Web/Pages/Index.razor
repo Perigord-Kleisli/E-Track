@@ -1,3 +1,8 @@
 @page "/"
+@using ETrack.Web.Pages.Auth
 
-<h2>Website</h2>
+<AuthorizeView>
+    <NotAuthorized>
+        <Login />
+    </NotAuthorized>
+</AuthorizeView>

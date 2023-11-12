@@ -1,0 +1,32 @@
+.add-student-container {
+    background-color: lightgray;
+    color: var(--gray-3);
+    padding: 0.5em;
+    font-size: larger;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+
+    .add-icon {
+        font-size: 2em;
+        padding: 0;
+        margin: 0;
+        margin-right: 0.2rem;
+    }
+
+    p {
+        margin: 0;
+        padding: 0;
+        transform: translateY(0.1em);
+    }
+    user-select: none;
+    transition: background-color 50ms;
+}
+
+.add-student-container:hover {
+    background-color: var(--gray-4);
+}
+
+.add-student-container:active {
+    background-color: var(--gray-5);
+}

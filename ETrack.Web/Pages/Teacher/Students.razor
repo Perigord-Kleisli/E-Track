@@ -1,0 +1,39 @@
+@page "/students"
+@inject DialogService DialogService
+
+<div class="add-student-container" @onclick=@ShowAddStudentDialog>
+    <span class="add-icon material-icons">add</span>
+    <p> Add Student </p>
+</div>
+
+@code {
+    async Task ShowAddStudentDialog()
+    {
+        var result = await DialogService.OpenAsync("Add Student", ds =>
+    @<EditForm Model=@AddStudentModel class="add-student-form">
+        <div class="input-box">
+            <InputText id="Name" @bind-Value="@AddStudentModel.Name" placeholder="" required />
+            <label for="Name" class="label">Name</label>
+        </div>
+        <div class="input-box">
+            <InputNumber id="Grade" @bind-Value="@AddStudentModel.Grade" placeholder="" required />
+            <label for="Grade">Grade</label>
+        </div>
+        <div class="input-box">
+            <InputSelect id="Section" @bind-Value="@AddStudentModel.SectionId">
+                <option value="0" selected disabled hidden>Select Section</option>
+                <option value="1">1</option> 
+            </InputSelect>
+        </div>
+
+    </EditForm>
+);
+    }
+
+    public AddStudentDto AddStudentModel { get; set; } = new AddStudentDto
+        {
+            Grade = 0,
+            SectionId = 0,
+            Name = "",
+        };
+}

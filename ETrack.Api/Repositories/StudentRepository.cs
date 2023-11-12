@@ -14,10 +14,22 @@ namespace ETrack.Api.Repositories
         {
             this.eTrackDBContext = eTrackDBContext;
         }
+
+        public async Task addSectionAsync(Section section)
+        {
+            await eTrackDBContext.Sections.AddAsync(section);
+            await eTrackDBContext.SaveChangesAsync();
+        }
+
         public async Task addStudentAsync(Student student)
         {
             await eTrackDBContext.Students.AddAsync(student);
             await eTrackDBContext.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Section>> GetSectionsAsync()
+        {
+            return await eTrackDBContext.Sections.ToListAsync();
         }
 
         public async Task<Student?> getStudentByIdAsync(int id)

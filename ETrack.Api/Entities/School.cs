@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using ETrack.Api.Entities;
 
 namespace ETrack.Api.Entities
@@ -9,7 +11,7 @@ namespace ETrack.Api.Entities
         public required int Grade { get; set; }
         public required User Adviser { get; set; }
         public required List<Student> Students { get; set; }
-        public required List<Schedule> Schedule { get; set; }
+        // public required List<Schedule> Schedule { get; set; }
     }
 
     public enum Day

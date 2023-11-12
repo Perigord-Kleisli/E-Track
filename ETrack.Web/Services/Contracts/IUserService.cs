@@ -8,5 +8,7 @@ namespace ETrack.Web.Services.Contracts
         Task UserConfirm(string email);
         Task UserPasswordReset(string email);
         Task UserRegister(UserRegisterDto userRegisterDto);
+
+        Task<IEnumerable<UserDto>> GetUsers();
     }
 }

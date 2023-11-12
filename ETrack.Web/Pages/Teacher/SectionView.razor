@@ -1,0 +1,16 @@
+<style>
+.section-view-container {
+    background-color: lightgray;
+    margin: 1em;
+    padding: 0.5em;
+}
+</style>
+
+<div class="section-view-container">
+    <h1>@sectionDto.Name</h1>
+</div>
+
+@code {
+    [Parameter]
+    public required SectionDto sectionDto { get; set; }
+}

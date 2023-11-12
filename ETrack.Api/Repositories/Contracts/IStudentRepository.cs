@@ -8,5 +8,7 @@ namespace ETrack.Api.Repositories.Contracts
         Task addStudentAsync(Student student);
         Task<Student?> getStudentByIdAsync(int id);
         Task<IEnumerable<Student>> GetStudentsAsync();
+        Task addSectionAsync(Section section);
+        Task<IEnumerable<Section>> GetSectionsAsync();
     }    
 }

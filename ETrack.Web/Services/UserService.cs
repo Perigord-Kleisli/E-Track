@@ -13,6 +13,17 @@ namespace ETrack.Web.Services
             this.httpClient = httpClient;
         }
 
+        public async Task<IEnumerable<UserDto>> GetUsers()
+        {
+            var response = await httpClient.GetAsync("/users/User");
+            if (!response.IsSuccessStatusCode)
+            {
+                var message = await response.Content.ReadAsStringAsync();
+                throw new Exception(message);
+            }
+            return (await response.Content.ReadFromJsonAsync<IEnumerable<UserDto>>())!;
+        }
+
         public async Task UserConfirm(string email)
         {
             try

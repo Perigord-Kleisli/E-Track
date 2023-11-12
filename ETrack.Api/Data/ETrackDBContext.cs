@@ -13,6 +13,8 @@ namespace ETrack.Api.Data
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<SchoolDay> SchoolDays { get; set; }
         public DbSet<SchoolYear> SchoolYears { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
+        public DbSet<SubjectSchedule> SubjectSchedules { get; set; }
         public DbSet<Activity> Activities { get; set; }
         public DbSet<UserRegisterToken> RegisterTokens { get; set; }
         public DbSet<UserEmailConfirmationToken> EmailConfirmationTokens { get; set; }

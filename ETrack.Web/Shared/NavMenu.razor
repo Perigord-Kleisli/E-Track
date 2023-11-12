@@ -23,17 +23,24 @@
         <AuthorizeView Roles="@RoleType.Teacher">
             <Authorized>
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="teacher-panel">
-                        <span class="material-icons">school</span> Teacher Panel
+                    <NavLink class="nav-link" href="students">
+                        <span class="material-icons">school</span>
+                        Students
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="sections">
+                        <span class="material-icons">event_seat</span>
+                        Sections
                     </NavLink>
                 </div>
             </Authorized>
         </AuthorizeView>
-        <AuthorizeView Roles="@RoleType.Parent" >
+        <AuthorizeView Roles="@RoleType.Parent">
             <Authorized>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="children">
-                        <span class="material-icons">supervisor_account</span> 
+                        <span class="material-icons">supervisor_account</span>
                         Children
                     </NavLink>
                 </div>

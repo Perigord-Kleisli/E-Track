@@ -1,0 +1,86 @@
+@page "/sections"
+@inject DialogService DialogService
+@inject IUserService UserService
+@inject IStudentService StudentService
+
+<div class="add-section-container" @onclick=@ShowAddSectionDialog>
+    <span class="add-icon material-icons">add</span>
+    <p> Add Section </p>
+</div>
+
+<div class="sections-container">
+    @foreach(var section in sectionDtos)
+    {
+        <SectionView sectionDto=section />
+    }
+</div>
+
+@code {
+    async Task ShowAddSectionDialog()
+    {
+        await DialogService.OpenAsync("Create Section", ds =>
+    {
+
+        async Task AddSectionSubmit()
+        {
+            await StudentService.CreateSection(AddSectionModel);
+            ds.Close(true);
+        }
+
+        return @<EditForm Model="@AddSectionModel" OnSubmit="AddSectionSubmit">
+        <div class="input-box">
+            <InputText id="Name" @bind-Value="@AddSectionModel.Name" placeholder="" required />
+            <label for="Name" class="label">Name</label>
+        </div>
+        <div class="input-box">
+            <InputNumber id="Grade" @bind-Value="@AddSectionModel.Grade" placeholder="" required />
+            <label for="Grade" class="label">Grade</label>
+        </div>
+        <div class="input-box">
+            <InputSelect id="Section" @bind-Value="@AddSectionModel.AdviserId">
+                <option value="0" selected disabled hidden>Select Adviser</option>
+                @foreach(var advisor in adviserCandidates) {
+                <option value="@advisor.Id">@advisor.FullName</option>
+            }
+            </InputSelect>
+        </div>
+        <button type="submit" class="btn">Create Section</button>
+    </EditForm>;
+    });
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        adviserCandidates =
+        from user in (await UserService.GetUsers())
+        where user.Roles.HasFlag(Role.Teacher)
+        select user;
+
+        await base.OnInitializedAsync();
+    }
+
+
+    public IEnumerable<UserDto> adviserCandidates = new List<UserDto> { };
+    public IEnumerable<SectionDto> sectionDtos = new List<SectionDto> {
+        new SectionDto {
+            Name = "Acacia",
+            Grade = 2,
+            AdvisorId = 2,
+            StudentIds = new List<int> {1,2,3}
+        }, 
+
+        new SectionDto {
+            Name = "TestSection2",
+            Grade = 3,
+            AdvisorId = 3,
+            StudentIds = new List<int> {4,5,6}
+        }
+    };
+
+    public AddSectionDTO AddSectionModel { get; set; } = new AddSectionDTO
+        {
+            Name = "",
+            Grade = 0,
+            AdviserId = 0
+        };
+}

@@ -44,15 +44,11 @@
             <thead>
                 <tr>
                     <th scope="col">Id</th>
-                    <th scope="col">Email</th>
                     <th scope="col">FullName</th>
                     <th scope="col">FirstName</th>
                     <th scope="col">LastName</th>
-                    <th scope="col">PasswordHash</th>
                     <th scope="col">Roles</th>
-                    <th scope="col">IsEmailConfirmed</th>
                     <th scope="col">BirthDate</th>
-                    <th scope="col">CreationDate</th>
                 </tr>
             </thead>
             <tbody>
@@ -60,15 +56,11 @@
             {
                 <tr>
                     <th>@user.Id</th>
-                    <td>@user.Email</td>
                     <td>@user.FullName</td>
                     <td>@user.FirstName</td>
                     <td>@user.LastName</td>
-                    <td>@user.PasswordHash</td>
                     <td>@user.Roles</td>
-                    <td>@user.IsEmailConfirmed</td>
                     <td>@user.BirthDate</td>
-                    <td>@user.CreationDate</td>
                 </tr>
             }
             </tbody> 
@@ -91,7 +83,7 @@
         public bool isTeacher;
         public bool isAdmin;
     }
-    List<UsersGetDto> users = new List<UsersGetDto>{};
+    List<UserDto> users = new List<UserDto>{};
     string generatedGUID = "";
 
     bool showTable = false;
@@ -107,7 +99,7 @@
         var response = await Http.GetAsync("api/auth/users");
         if (response.IsSuccessStatusCode)
         {
-            users = (await response.Content.ReadFromJsonAsync<List<UsersGetDto>>())!;
+            users = (await response.Content.ReadFromJsonAsync<List<UserDto>>())!;
         }
     }
     async void showGUID()

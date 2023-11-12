@@ -68,6 +68,34 @@ namespace ETrack.Api.Controllers
             return Ok();
         }
 
+        [HttpPost("sections"), Authorize(Roles = RoleType.Teacher)]
+        public async Task<ActionResult> CreateSectionAsync(AddSectionDTO addSectionDTO) 
+        {
+            var adviser = await authRepository.GetUserAsync(addSectionDTO.AdviserId);
+            if (adviser is null)
+                return BadRequest("Advisor does not exist");
+
+            List<Student> students = new List<Student>{};
+            
+            var section = new Section {
+                Name = addSectionDTO.Name,
+                Grade = addSectionDTO.Grade,
+                Adviser = adviser,
+                Students = new List<Student>{},
+                // Schedule = new List<Schedule>{} //Did not have enough time to implement schedules
+            };
+
+            await studentRepository.addSectionAsync(section);
+            return Ok();
+        }
+
+        [HttpGet("sections")]
+        public async Task<ActionResult<IEnumerable<SectionDto>>> GetSections()
+        {
+            var sections = await studentRepository.GetSectionsAsync();
+            return Ok(sections!.Select(x => x.ConvertToDto()));
+        }
+
         private string getUserClaim(string claimType)
         {
             return HttpContext.User.Claims.First(x => x.Type == claimType).Value;

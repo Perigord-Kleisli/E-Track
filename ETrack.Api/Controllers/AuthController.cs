@@ -150,11 +150,6 @@ namespace ETrack.Api.Controllers
             return Ok(token.Uid);
         }
 
-        [HttpGet("users"), Authorize(Roles = RoleType.Admin)]
-        public async Task<ActionResult<IEnumerable<UsersGetDto>>> GetUsers()
-        {
-            return Ok(await authRepository.GetUsers());
-        }
 
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(UserLoginDto request) {

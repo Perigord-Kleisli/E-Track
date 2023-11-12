@@ -38,6 +38,26 @@ namespace ETrack.Api.Extensions
                 Issuance = completedActivity.Issuance.ConvertToDto(),
                 Deadline = completedActivity.Deadline
             };
+
+        public static UserDto ConvertToDto(this User user) 
+            => new UserDto 
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Roles = user.Roles,
+                BirthDate = user.BirthDate,
+            };
+
+        public static SectionDto ConvertToDto(this Section section)
+            => new SectionDto 
+            {
+                Name = section.Name,
+                Grade = section.Grade,
+                AdvisorId = section.Adviser.Id,
+                StudentIds = section.Students.Select(x => x.Id)
+            };
     }
 
     public static class FuncUtils

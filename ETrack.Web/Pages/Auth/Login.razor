@@ -38,7 +38,7 @@
             @errorMessage
             @if(unverifiedAccount) {
                 <br>
-                <button @onclick="VerifyEmail" class="btn">Send confirmation link</button>
+                <button style="width: 100%;" @onclick="VerifyEmail" class="btn">Send confirmation link</button>
                 @if(verifyLoading)
                 {
                     <style>
@@ -49,7 +49,7 @@
                     </style>
                     <div class="lds-dual-ring"></div>
                 }
-                <p style="text-align: center; margin: 1em">@confirmationStatus</p>
+                <p style="margin: 1em">@confirmationStatus</p>
             }
         </div>
     }
@@ -137,11 +137,11 @@
         try 
         {
             await UserService.UserConfirm(user.Email);
-            confirmationStatus += $"Check your email for confirmation link";
+            confirmationStatus = $"Check your email for your confirmation link";
         }
         catch (Exception e)
         {
-            confirmationStatus += $"Error sending confirmation link: {e.Message}";
+            confirmationStatus = $"Error sending confirmation link: {e.Message}";
         }
         verifyLoading = false;
     }

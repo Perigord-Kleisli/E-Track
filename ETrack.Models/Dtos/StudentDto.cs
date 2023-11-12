@@ -4,6 +4,7 @@ namespace ETrack.Models.Dtos
     {
         public int Grade { get; set; }
         public required string Name { get; set; }
+        public int SectionId { get; set; }
     }
 
     public class SimpleStudentDto

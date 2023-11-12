@@ -1,12 +1,13 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
-
-
 :root {
     --secondary-color: #8F4E8B;
     --secondary-color-light: #a75fa2;
     --secondary-color-dark: #743b70;
-    --text-color: gray;
+    --label-text-color: gray;
+    --gray-3: rgb(99, 99, 99);
+    --gray-4: rgb(177, 177, 177);
+    --gray-5: rgb(206, 206, 206);
     --primary-color: #5E5086;
 }
 
@@ -104,8 +105,10 @@ a:hover {
 }
 
 label {
-    color: var(--text-color);
+    color: var(--label-text-color);
+    user-select: none;
     font-size: 1.2rem;
+    z-index: -1;
 }
 
 input {
@@ -114,7 +117,7 @@ input {
     margin: 0;
     font-size: large;
     padding: 1rem 1rem;
-    border: 1px solid var(--text-color);
+    border: 1px solid var(--label-text-color);
     border-radius: 0.5rem;
 }
 
@@ -138,7 +141,7 @@ label {
     background-color: white;
 }
 
-form:focus-within > label,
+form:focus-within label,
 input:not(:placeholder-shown) + label {
     transform: scale(0.8) translateY(calc(-1rem - 6px));
     border: white solid 6px;
@@ -214,4 +217,9 @@ input:invalid:not(:placeholder-shown) + label {
     100% {
         transform: rotate(360deg);
     }
+}
+
+.input-box {
+    display: grid;
+    margin: 1rem;
 }
