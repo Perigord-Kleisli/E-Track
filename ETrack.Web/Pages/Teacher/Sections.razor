@@ -9,7 +9,7 @@
 </div>
 
 <div class="sections-container">
-    @foreach(var section in sectionDtos)
+    @foreach (var section in sectionDtos)
     {
         <SectionView sectionDto=section />
     }
@@ -56,26 +56,14 @@
         where user.Roles.HasFlag(Role.Teacher)
         select user;
 
+        sectionDtos = await StudentService.GetSections();
+
         await base.OnInitializedAsync();
     }
 
 
     public IEnumerable<UserDto> adviserCandidates = new List<UserDto> { };
-    public IEnumerable<SectionDto> sectionDtos = new List<SectionDto> {
-        new SectionDto {
-            Name = "Acacia",
-            Grade = 2,
-            AdvisorId = 2,
-            StudentIds = new List<int> {1,2,3}
-        }, 
-
-        new SectionDto {
-            Name = "TestSection2",
-            Grade = 3,
-            AdvisorId = 3,
-            StudentIds = new List<int> {4,5,6}
-        }
-    };
+    public IEnumerable<SectionDto> sectionDtos = new List<SectionDto> { };
 
     public AddSectionDTO AddSectionModel { get; set; } = new AddSectionDTO
         {

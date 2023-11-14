@@ -183,5 +183,10 @@ namespace ETrack.Api.Repositories
             etrackDBContext.PasswordForgotTokens.Remove(guidMatch);
             await etrackDBContext.SaveChangesAsync();
         }
+
+        public User? GetUser(int id)
+        {
+            return etrackDBContext.Users.Find(id);
+        }
     }
 }

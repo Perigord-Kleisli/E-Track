@@ -6,20 +6,20 @@ namespace ETrack.Api.Data
 {
     public class ETrackDBContext : DbContext
     {
-        public ETrackDBContext(DbContextOptions<ETrackDBContext> options) : base(options) { }
+        public ETrackDBContext(DbContextOptions<ETrackDBContext> options) : base(options) { 
+        }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<SchoolDay> SchoolDays { get; set; }
+        public DbSet<Section> Sections { get; set; }
         public DbSet<SchoolYear> SchoolYears { get; set; }
-        public DbSet<Schedule> Schedules { get; set; }
-        public DbSet<SubjectSchedule> SubjectSchedules { get; set; }
         public DbSet<Activity> Activities { get; set; }
         public DbSet<UserRegisterToken> RegisterTokens { get; set; }
         public DbSet<UserEmailConfirmationToken> EmailConfirmationTokens { get; set; }
         public DbSet<UserPasswordForgotToken> PasswordForgotTokens { get; set; }
-        public DbSet<Section> Sections { get; set; }
+        public DbSet<IsChildRequest> isChildRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

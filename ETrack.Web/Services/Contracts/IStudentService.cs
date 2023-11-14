@@ -6,5 +6,9 @@ namespace ETrack.Web.Services.Contracts
     {
         Task CreateSection(AddSectionDTO addSectionDTO);
         Task<IEnumerable<SectionDto>> GetSections();
+        Task<SectionDto> GetSection(int id);
+
+        Task CreateStudent(SimpleStudentDto simpleStudentDto);
+        Task<IEnumerable<SimpleStudentDto>> GetStudents();
     }
 }

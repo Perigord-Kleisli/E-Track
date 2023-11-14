@@ -1,16 +1,30 @@
 @page "/students"
 @inject DialogService DialogService
+@inject IStudentService StudentService
 
 <div class="add-student-container" @onclick=@ShowAddStudentDialog>
     <span class="add-icon material-icons">add</span>
     <p> Add Student </p>
 </div>
 
+<div class="students-container">
+    @foreach(var student in studentDtos) {
+        <StudentView studentDto=student />
+    }
+</div>
+
 @code {
     async Task ShowAddStudentDialog()
     {
         var result = await DialogService.OpenAsync("Add Student", ds =>
-    @<EditForm Model=@AddStudentModel class="add-student-form">
+    {
+        async Task AddStudent()
+        {
+            await StudentService.CreateStudent(AddStudentModel);
+            ds.Close(true);
+        }
+
+        return @<EditForm Model=@AddStudentModel class="add-student-form" OnSubmit="AddStudent">
         <div class="input-box">
             <InputText id="Name" @bind-Value="@AddStudentModel.Name" placeholder="" required />
             <label for="Name" class="label">Name</label>
@@ -18,22 +32,36 @@
         <div class="input-box">
             <InputNumber id="Grade" @bind-Value="@AddStudentModel.Grade" placeholder="" required />
             <label for="Grade">Grade</label>
+            <ValidationMessage For="(() => AddStudentModel.Grade)" />
         </div>
         <div class="input-box">
             <InputSelect id="Section" @bind-Value="@AddStudentModel.SectionId">
                 <option value="0" selected disabled hidden>Select Section</option>
-                <option value="1">1</option> 
+                @foreach(var sectionDto in sectionDtos) {
+                <option value="@sectionDto.Id">@sectionDto.Name</option>
+            }
             </InputSelect>
         </div>
-
-    </EditForm>
+        <button type="submit" class="btn">Create Student</button>
+    </EditForm>;
+    }
 );
     }
 
-    public AddStudentDto AddStudentModel { get; set; } = new AddStudentDto
+    public IEnumerable<SectionDto> sectionDtos = new List<SectionDto> { };
+    public IEnumerable<SimpleStudentDto> studentDtos = new List<SimpleStudentDto> { };
+    protected async override Task OnInitializedAsync()
+    {
+        sectionDtos = await StudentService.GetSections();
+        studentDtos = await StudentService.GetStudents();
+        await base.OnInitializedAsync();
+    }
+
+    public SimpleStudentDto AddStudentModel { get; set; } = new SimpleStudentDto
         {
-            Grade = 0,
-            SectionId = 0,
+            Grade = 1,
+            SectionId = 1,
             Name = "",
         };
+
 }

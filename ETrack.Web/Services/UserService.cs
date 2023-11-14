@@ -13,6 +13,17 @@ namespace ETrack.Web.Services
             this.httpClient = httpClient;
         }
 
+        public async Task<UserDto> GetUser(int id)
+        {
+            var response = await httpClient.GetAsync($"/users/User/{id}");
+            if (!response.IsSuccessStatusCode)
+            {
+                var message = await response.Content.ReadAsStringAsync();
+                throw new Exception(message);
+            }
+            return (await response.Content.ReadFromJsonAsync<UserDto>())!;
+        }
+
         public async Task<IEnumerable<UserDto>> GetUsers()
         {
             var response = await httpClient.GetAsync("/users/User");

@@ -1,16 +1,34 @@
-<style>
-.section-view-container {
-    background-color: lightgray;
-    margin: 1em;
-    padding: 0.5em;
-}
-</style>
+@inject IUserService UserService
+@inject DialogService DialogService
+@inject IStudentService StudentService
 
-<div class="section-view-container">
-    <h1>@sectionDto.Name</h1>
+<div class="section-view-container" @onclick=ShowDialog>
+    <h1 class="section-name">@sectionDto.Name</h1>
+    <h1 class="section-adviser">@Advisor</h1>
 </div>
 
 @code {
     [Parameter]
     public required SectionDto sectionDto { get; set; }
+
+    string? Advisor = "";
+
+    async Task ShowDialog()
+    {
+        await DialogService.OpenAsync("Students", ds =>
+        {
+            return @<Students />;
+        });
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var AdvisorUser = await UserService.GetUser(sectionDto.AdvisorId);
+        if (AdvisorUser is null)
+            Advisor = null;
+        else
+            Advisor = AdvisorUser.FullName;
+        await base.OnInitializedAsync();
+    }
+
 }

@@ -30,7 +30,7 @@ namespace ETrack.Api.Controllers
         }
 
         [HttpPost("register")]
-        [RateLimit(PeriodInSec = 60, Limit = 1)]
+        // [RateLimit(PeriodInSec = 60, Limit = 1)]
         public async Task<ActionResult<User>> Register(UserRegisterDto request) {
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
@@ -64,7 +64,7 @@ namespace ETrack.Api.Controllers
         }
 
         [HttpPost("reset-password-token")]
-        [RateLimit(PeriodInSec = 90, Limit = 3)]
+        // [RateLimit(PeriodInSec = 90, Limit = 3)]
         public async Task<ActionResult> GetPasswordToken([EmailAddress] string email) {
             var user =  await authRepository.GetByUserByEmailAsync(email);
 
@@ -88,7 +88,7 @@ namespace ETrack.Api.Controllers
 
 
         [HttpPost("confirmation-token")]
-        [RateLimit(PeriodInSec = 90, Limit = 3)]
+        // [RateLimit(PeriodInSec = 90, Limit = 3)]
         public async Task<ActionResult> GetConfirmationToken([EmailAddress] string emailToVerify) {
 
             var user =  await authRepository.GetByUserByEmailAsync(emailToVerify);

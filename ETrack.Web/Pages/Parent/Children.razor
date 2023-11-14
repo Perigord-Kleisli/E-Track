@@ -1,4 +1,5 @@
 @page "/children"
+@inject IStudentService StudentService
 
 <select @bind="@ChildId" class="student-selector">
     <option value="0" selected disabled hidden>
@@ -7,12 +8,22 @@
     <option value="-1">Add Child</option>
 </select>
 
-@if(ChildId == -1) 
+@if (ChildId == -1)
 {
-    <AddChildren />
-    <RadzenButton Text="Hello World" />
+    @foreach (var student in students)
+    {
+        <SimpleStudentView studentDto=student />
+    }
 }
 
 @code {
-   public int ChildId {get; set; } 
+    public int ChildId { get; set; }
+
+        protected async override Task OnInitializedAsync()
+        {
+            students = await StudentService.GetStudents();
+            await base.OnInitializedAsync();
+        }
+
+        IEnumerable<SimpleStudentDto> students { get; set; } = new List<SimpleStudentDto> { };
 }

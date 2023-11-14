@@ -141,7 +141,7 @@ label {
     background-color: white;
 }
 
-form:focus-within label,
+input:focus-within + label,
 input:not(:placeholder-shown) + label {
     transform: scale(0.8) translateY(calc(-1rem - 6px));
     border: white solid 6px;

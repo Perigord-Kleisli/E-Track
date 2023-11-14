@@ -6,6 +6,7 @@ namespace ETrack.Api.Repositories.Contracts
 {
     public interface IAuthRepository
     {
+       User? GetUser(int id);
        Task<User?> GetUserAsync(int id);
        Task<IEnumerable<User>> GetUsers();
        Task<User?> GetByUserByEmailAsync(string usernam);

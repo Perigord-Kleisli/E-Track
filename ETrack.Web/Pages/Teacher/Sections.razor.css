@@ -2,6 +2,7 @@
     background-color: lightgray;
     color: var(--gray-3);
     padding: 0.5em;
+    margin-bottom: 1em;
     font-size: larger;
     display: flex;
     align-items: center;

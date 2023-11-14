@@ -20,7 +20,6 @@
 
 <AuthorizeView Roles="Admin" Context="Authcontext">
     <Authorized>
-
         <EditForm Model=@GenGUIDModel OnValidSubmit=@showGUID>
             <div class="gen-guid-container">
                 <button class="btn btn-primary" type="submit">Generate Register GUID</button>
@@ -28,45 +27,13 @@
                     <p>@generatedGUID</p>
                 </div>
             </div>
+            <p>Parent</p>
             <input @bind=GenGUIDModel.isParent  type="checkbox" name="parentCheckbox">
-            <label for="parentCheckbox">Parent</label>
+            <p>Teacher</p>
             <input @bind=GenGUIDModel.isTeacher type="checkbox" name="teacherCheckbox">
-            <label for="teacherCheckbox">Teacher</label>
+            <p>Admin</p>
             <input @bind=GenGUIDModel.isAdmin type="checkbox" name="adminCheckbox">
-            <label for="adminCheckbox">Admin</label>
         </EditForm>
-        
-        <br/>
-        <button class="btn btn-primary" @onclick="toggleTable">Show User table</button>
-        @if(showTable)
-        {
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">FullName</th>
-                    <th scope="col">FirstName</th>
-                    <th scope="col">LastName</th>
-                    <th scope="col">Roles</th>
-                    <th scope="col">BirthDate</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach(var user in users)
-            {
-                <tr>
-                    <th>@user.Id</th>
-                    <td>@user.FullName</td>
-                    <td>@user.FirstName</td>
-                    <td>@user.LastName</td>
-                    <td>@user.Roles</td>
-                    <td>@user.BirthDate</td>
-                </tr>
-            }
-            </tbody> 
-        </table>
-        }
-        
     </Authorized>
     <NotAuthorized>
         <p>User is not authorized to view this</p>

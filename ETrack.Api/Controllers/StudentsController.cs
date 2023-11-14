@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using System.Security.Claims;
 using ETrack.Api.Entities;
 using ETrack.Api.Extensions;
@@ -33,7 +34,8 @@ namespace ETrack.Api.Controllers
             {
                 Name = x.Name,
                 Grade = x.Grade,
-                Id = x.Id
+                Id = x.Id,
+                SectionId = x.SectionId
             }));
         }
 
@@ -42,7 +44,7 @@ namespace ETrack.Api.Controllers
         {
             var user = await authRepository.GetUserAsync(int.Parse(getUserClaim(ClaimTypes.Sid)));
             if (!(user!.Children.Any(x => x.Id == id) 
-                 || user.Students.Any(x => x.Id == id)))
+                || user.Students.Any(x => x.Id == id)))
             {
                 return BadRequest($"User lacks permission to view student info");
             }
@@ -57,14 +59,15 @@ namespace ETrack.Api.Controllers
         }
 
         [HttpPost, Authorize(Roles = RoleType.Teacher)]
-        public async Task<ActionResult> CreateStudentAsync(AddStudentDto addStudentDto)
+        public async Task<ActionResult> CreateStudentAsync(SimpleStudentDto addStudentDto)
         {
             var student = new Student
             {
                 Name = addStudentDto.Name,
                 Grade = addStudentDto.Grade,
+                SectionId = addStudentDto.SectionId
             };
-            await studentRepository.addStudentAsync(student);
+            await studentRepository.addStudentAsync(student, addStudentDto.SectionId);
             return Ok();
         }
 
@@ -82,7 +85,7 @@ namespace ETrack.Api.Controllers
                 Grade = addSectionDTO.Grade,
                 Adviser = adviser,
                 Students = new List<Student>{},
-                // Schedule = new List<Schedule>{} //Did not have enough time to implement schedules
+                Schedule = new List<Schedule>{} //Did not have enough time to implement schedules
             };
 
             await studentRepository.addSectionAsync(section);
@@ -90,10 +93,28 @@ namespace ETrack.Api.Controllers
         }
 
         [HttpGet("sections")]
-        public async Task<ActionResult<IEnumerable<SectionDto>>> GetSections()
+        public ActionResult<IEnumerable<SectionDto>> GetSections()
         {
-            var sections = await studentRepository.GetSectionsAsync();
-            return Ok(sections!.Select(x => x.ConvertToDto()));
+            try
+            {
+                var sections = studentRepository.GetSections()!;
+                return Ok(sections.Select(x => x.ConvertToDto()));
+            } catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        [HttpGet("sections/{id}")]
+        public ActionResult<SectionDto> GetSection(int id)
+        {
+            try
+            {
+                var section = studentRepository.GetSection(id);
+                return Ok(section.ConvertToDto());
+            } catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         private string getUserClaim(string claimType)

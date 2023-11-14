@@ -11,7 +11,7 @@ namespace ETrack.Api.Entities
         public required int Grade { get; set; }
         public required User Adviser { get; set; }
         public required List<Student> Students { get; set; }
-        // public required List<Schedule> Schedule { get; set; }
+        public required List<Schedule> Schedule { get; set; }
     }
 
     public enum Day
@@ -21,9 +21,9 @@ namespace ETrack.Api.Entities
 
     public class Schedule
     {
-       public int Id { get; set; } 
-       public required Day Day { get; set; }
-       public required List<SubjectSchedule> SubjectSchedules { get; set; }
+        public int Id { get; set; } 
+        public required Day Day { get; set; }
+        public required List<SubjectSchedule> SubjectSchedules { get; set; }
     }
 
     public class SubjectSchedule
@@ -31,7 +31,7 @@ namespace ETrack.Api.Entities
         public int Id { get; set; }
         public required DateTime StartTime { get; set; }
         public required DateTime EndTime { get; set; }
-        public Subject? Subject { get; set; }
+        public required Subject Subject { get; set; }
     }
 
     public class SchoolYear 

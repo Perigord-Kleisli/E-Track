@@ -18,7 +18,8 @@ namespace ETrack.Api.Extensions
                 Scores = student
                     .Scores
                     .Select(ConvertToDto)
-                    .ToList()
+                    .ToList(),
+                
             };
 
         public static SchoolDayDto ConvertToDto(this SchoolDay schoolDay)
@@ -53,6 +54,7 @@ namespace ETrack.Api.Extensions
         public static SectionDto ConvertToDto(this Section section)
             => new SectionDto 
             {
+                Id = section.Id,
                 Name = section.Name,
                 Grade = section.Grade,
                 AdvisorId = section.Adviser.Id,

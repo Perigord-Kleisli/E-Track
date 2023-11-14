@@ -10,5 +10,6 @@ namespace ETrack.Web.Services.Contracts
         Task UserRegister(UserRegisterDto userRegisterDto);
 
         Task<IEnumerable<UserDto>> GetUsers();
+        Task<UserDto> GetUser(int id);
     }
 }

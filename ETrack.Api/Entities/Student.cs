@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace ETrack.Api.Entities
 {
     public class Student
@@ -7,6 +9,10 @@ namespace ETrack.Api.Entities
         public required string Name { get; set; }
         public List<SchoolDay> Attendance { get; set; } = new List<SchoolDay>();
         public List<CompletedActivity> Scores { get; set; } = new List<CompletedActivity>();
+        [ForeignKey("Section")]
+        public int SectionId { get; set; }
+        public Section Section { get; set; } = default!;
+
     }
 
     public class CompletedActivity : Activity
