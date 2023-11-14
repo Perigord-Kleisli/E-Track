@@ -1,0 +1,33 @@
+
+@inject IUserService UserService
+@inject IStudentService StudentService
+@inject DialogService DialogService
+
+<div class="student-view-container" @onclick=ShowDialog>
+    <h1 class="student-name">@studentDto.Name</h1>
+    <h1 class="student-section">@sectionDto.Name</h1>
+    <h1 class="student-grade">@studentDto.Grade</h1>
+</div>
+
+@code {
+    [Parameter]
+    public required SimpleStudentDto studentDto { get; set; }
+
+    async Task ShowDialog()
+    {
+    }
+
+    SectionDto sectionDto = new SectionDto {
+        Name = "",
+        Grade = 1,
+        AdvisorId = 0,
+        StudentIds = new List<int> {}
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        sectionDto = await StudentService.GetSection(studentDto.SectionId);
+        await base.OnInitializedAsync();
+    }
+
+}

@@ -1,0 +1,54 @@
+.student-view-container {
+    border: solid 2px var(--secondary-color);
+    margin: 1em;
+    background-color: white;
+    padding: 1.5em;
+    border-radius: 1rem;
+    filter: brightness(100%);
+    transition: filter 200ms;
+}
+
+.student-view-container:hover {
+    filter: brightness(90%);
+}
+
+.student-view-container:active {
+    filter: brightness(95%);
+}
+
+.student-view-container h1 {
+    font-weight: 30;
+    vertical-align: middle;
+    font-size: 2em;
+}
+
+.student-name::before {
+    content: "Name:";
+    font-size: 1rem;
+    font-weight: lighter;
+    padding: 0.5em;
+    vertical-align: middle;
+}
+
+.student-grade::before {
+    content: "Grade:";
+    font-size: 1rem;
+    font-weight: lighter;
+    padding: 0.5em;
+    vertical-align: middle;
+}
+
+.student-section::before {
+    content: "Section:";
+    font-size: 1rem;
+    font-weight: lighter;
+    padding: 0.5em;
+    vertical-align: middle;
+}
+
+.button-container {
+    display: grid;
+    place-items: center;
+    margin-left: auto;
+    margin-right: 1em;
+}
